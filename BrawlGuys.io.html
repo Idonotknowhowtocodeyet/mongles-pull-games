@@ -6,14 +6,46 @@
 
   gtag('config', 'G-L7856P3VNT');
 </script><!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <base href="https://cdn.jsdelivr.net/gh/genizy/cg-rip@main/fortzone-battle-royale/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <style>
-#sidebarad1,
+<html>
+<head>
+	
+    
+    
+	<base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/121/">
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>BrawlGuys.io</title>
+
+<link rel="manifest" href="appmanifest.json" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="apple-touch-icon" sizes="256x256" href="icon-256.png" />
+<meta name="HandheldFriendly" content="true" />
+
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
+
+<style type="text/css">
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		html, body {
+			background: #000;
+			color: #fff;
+			overflow: hidden;
+			touch-action: none;
+			-ms-touch-action: none;
+		}
+		canvas {
+			touch-action-delay: none;
+			touch-action: none;
+			-ms-touch-action: none;
+		}
+    #sidebarad1,
 #sidebarad2 {
   position: fixed;
   top: 50%;
@@ -53,130 +85,83 @@
 }
 </style>
 </head>
-  <body style="margin:0;padding:0" class="noselect">
-    <div id="loading-text" style="color: black; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="unity-canvas"
-      style="position:fixed;top:0;left:0;width:100%;height:100%;outline:none"></canvas>
+<body>
+<div id="fb-root"></div>
 
-    <script>
-    const SPLIT_MAP = {"CrazyGames.wasm": null, "CrazyGames.data": null};
+<div id="c2canvasdiv">
+
+<canvas id="c2canvas" width="1280" height="720">
+
+<h1>Your browser does not appear to support HTML5. Try upgrading your browser to the latest version. <a href="http://www.whatbrowser.org">What is a browser?</a>
+<br /><br /><a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br />
+<a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br />
+<a href="https://www.google.com/chrome/">Google Chrome</a><br />
+<a href="http://www.apple.com/safari/download/">Apple Safari</a></h1>
+</canvas>
+</div>
+
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="pathfind.js"></script>
+
+<script src="c2runtime.js"></script>
+<script>
+		// Start the Construct 2 project running on window load.
+		jQuery(document).ready(function ()
+		{
+			// Create new runtime using the c2canvas
+			cr_createRuntime("c2canvas");
+		});
+
+		// Pause and resume on page becoming visible/invisible
+		function onVisibilityChanged() {
+			if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden)
+				cr_setSuspended(true);
+			else
+				cr_setSuspended(false);
+		};
+
+		document.addEventListener("visibilitychange", onVisibilityChanged, false);
+		document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+		document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+		document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
+
+		function OnRegisterSWError(e)
+		{
+			console.warn("Failed to register service worker: ", e);
+		};
+
+		// Runtime calls this global method when ready to start caching (i.e. after startup).
+		// This registers the service worker which caches resources for offline support.
+		window.C2_RegisterSW = function C2_RegisterSW()
+		{
+			if (!navigator.serviceWorker)
+				return;		// no SW support, ignore call
+
+			try {
+				navigator.serviceWorker.register("sw.js", { scope: "./" })
+				.then(function (reg)
+				{
+					console.log("Registered service worker on " + reg.scope);
+				})
+				.catch(OnRegisterSWError);
+			}
+			catch (e)
+			{
+				OnRegisterSWError(e);
+			}
+		};
     </script>
+		<script>
+       if (typeof getAdinDomain !== 'undefined') {
+           const bodyTag = document.getElementsByTagName('body')[0];
 
-    <script>
-    async function mergeParts(baseUrl) {
-      const parts = [];
-      for (let i = 1; i <= 99; i++) {
-        const testUrl = baseUrl + ".part" + i;
-        try {
-          const head = await fetch(testUrl, { method: "HEAD" });
-          if (!head.ok) break;
-          parts.push(testUrl);
-        } catch { break; }
-      }
-      if (parts.length === 0) return baseUrl;
-
-      const buffers = await Promise.all(parts.map(async (u) => {
-        const r = await fetch(u);
-        if (!r.ok) throw new Error("Failed part " + u);
-        return new Uint8Array(await r.arrayBuffer());
-      }));
-
-      const total = buffers.reduce((a, b) => a + b.length, 0);
-      const merged = new Uint8Array(total);
-      let offset = 0;
-      for (const b of buffers) { merged.set(b, offset); offset += b.length; }
-
-      return URL.createObjectURL(new Blob([merged]));
-    }
-
-    async function preMergeAll() {
-      const map = {};
-      const files = Object.entries(SPLIT_MAP);
-      const total = files.length;
-      let done = 0;
-
-      const loadingText = document.getElementById("loading-text");
-
-      for (const [file, _] of files) {
-        const merged = await mergeParts("Build/" + file);
-        map[file] = merged;
-        done++;
-        const percent = Math.floor((done / total) * 100);
-        loadingText.innerText = `LOADING... ${percent}%`;
-        console.log("Premerged:", file, "→", merged);
-      }
-
-      loadingText.style.display = "none";
-
-      return map;
-    }
-
-    (async () => {
-      const mergedMap = await preMergeAll();
-      window.SPLIT_MAP = mergedMap;
-      const origFetch = window.fetch;
-      window.fetch = async function(resource, options) {
-        if (typeof resource === "string") {
-          const key = resource.split("/").pop();
-          if (mergedMap[key]) {
-            console.log("Redirect fetch:", key);
-            return origFetch(mergedMap[key], options);
-          }
+           let addAdinPreroll = document.createElement('script');
+            addAdinPreroll.src = getAdinDomain;
+            bodyTag.appendChild(addAdinPreroll);
         }
-        return origFetch(resource, options);
-      };
-
-      const OrigXHR = window.XMLHttpRequest;
-      window.XMLHttpRequest = function() {
-        const xhr = new OrigXHR();
-        const origOpen = xhr.open;
-        xhr.open = function(method, url, ...rest) {
-          const key = url.split("/").pop();
-          if (mergedMap[key]) {
-            console.log("Redirect XHR:", key);
-            origOpen.call(xhr, method, mergedMap[key], ...rest);
-          } else {
-            origOpen.call(xhr, method, url, ...rest);
-          }
-        };
-        return xhr;
-      };
-
-      const canvas = document.querySelector("#unity-canvas");
-      const loaderUrl = "Build/CrazyGames.loader.js";
-      const config = {
-        dataUrl: "Build/CrazyGames.data",
-        frameworkUrl: "Build/CrazyGames.framework.js",
-        codeUrl: "Build/CrazyGames.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Fortzone Battle Royale",
-        productName: "Fortzone Battle Royale",
-        productVersion: "1.0.0"
-      };
-
-      const script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {}).then((unityInstance) => {
-          window.gameInstance = unityInstance;
-        }).catch((message) => alert(message));
-      };
-      document.body.appendChild(script);
-    })();
-    </script>
-
-    <script>
-    function resizeCanvas() {
-      const canvas = document.getElementById("unity-canvas");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-    }
-    window.addEventListener("load", resizeCanvas);
-    window.addEventListener("resize", resizeCanvas);
-    </script>
-  <div id="sidebarad1">
+  </script>
+<div id="sidebarad1">
   <div class="sidebar-close" onclick="this.parentElement.style.display='none'">✕</div>
 </div>
 <div id="sidebarad2">
