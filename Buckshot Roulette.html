@@ -1,144 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-<head>
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/buckshot-roulette/index.html">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>Buckshot Roulette</title>
-    <link rel="stylesheet" href="style.css">
-    <link id="-gd-engine-icon" rel="icon" type="image/png" href="buckshot-roulette.icon.png" />
-    <link rel="apple-touch-icon" href="buckshot-roulette.apple-touch-icon.png" />
-</head>
-
-<body>
-    <script src="main.js"></script>
-    <div id="loading-text" style="color: white; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
-    <noscript> Your browser does not support JavaScript. </noscript>
-    <div id="status">
-        <img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="buckshot-roulette.png" alt="">
-        <progress id="status-progress"></progress>
-        <div id="status-notice"></div>
-    </div>
-    <script src="buckshot-roulette.js"></script>
+  gtag('config', 'G-L7856P3VNT');
+</script><!DOCTYPE html>
+<html>
+    <head>
+        <base href="https://cdn.jsdelivr.net/gh/web-ports/saihate-station@main/">
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="user-scalable=no">
+        <link rel="icon" href="icon/icon.png" type="image/png">
+        <link rel="apple-touch-icon" href="icon/icon.png">
+        <link rel="stylesheet" type="text/css" href="css/game.css">
+        <title></title>
+    </head>
+    <body style="background-color: black">
+        <script type="text/javascript" src="js/main.js"></script>
     <script>
-        const GODOT_CONFIG = {
-            "args": [],
-            "canvasResizePolicy": 2,
-            "ensureCrossOriginIsolationHeaders": false,
-            "executable": "buckshot-roulette",
-            "experimentalVK": false,
-            "fileSizes": {
-                "buckshot-roulette.pck": 344705792,
-                "buckshot-roulette.wasm": 43444261
-            },
-            "focusCanvas": false,
-            "gdextensionLibs": []
-        };
-        const GODOT_THREADS_ENABLED = false;
-        const engine = new Engine(GODOT_CONFIG);
-
-        function run() {
-            const loadingText = document.getElementById('loading-text');
-            const statusOverlay = document.getElementById('status');
-            const statusProgress = document.getElementById('status-progress');
-            const statusNotice = document.getElementById('status-notice');
-            loadingText.remove();
-            let initializing = true;
-            let statusMode = '';
-
-            function setStatusMode(mode) {
-                if (statusMode === mode || !initializing) {
-                    return;
-                }
-                if (mode === 'hidden') {
-                    statusOverlay.remove();
-                    initializing = false;
-                    return;
-                }
-                statusOverlay.style.visibility = 'visible';
-                statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-                statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-                statusMode = mode;
-            }
-
-            function setStatusNotice(text) {
-                while (statusNotice.lastChild) {
-                    statusNotice.removeChild(statusNotice.lastChild);
-                }
-                const lines = text.split('\n');
-                lines.forEach((line) => {
-                    statusNotice.appendChild(document.createTextNode(line));
-                    statusNotice.appendChild(document.createElement('br'));
-                });
-            }
-
-            function displayFailureNotice(err) {
-                console.error(err);
-                if (err instanceof Error) {
-                    setStatusNotice(err.message);
-                } else if (typeof err === 'string') {
-                    setStatusNotice(err);
-                } else {
-                    setStatusNotice('An unknown error occurred.');
-                }
-                setStatusMode('notice');
-                initializing = false;
-            }
-            const missing = Engine.getMissingFeatures({
-                threads: GODOT_THREADS_ENABLED,
-            });
-            if (missing.length !== 0) {
-                if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-                    let serviceWorkerRegistrationPromise;
-                    try {
-                        serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
-                    } catch (err) {
-                        serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
-                    }
-                    // There's a chance that installing the service worker would fix the issue
-                    Promise.race([
-                        serviceWorkerRegistrationPromise.then((registration) => {
-                            if (registration != null) {
-                                return Promise.reject(new Error('Service worker already exists.'));
-                            }
-                            return registration;
-                        }).then(() => engine.installServiceWorker()),
-                        // For some reason, `getRegistration()` can stall
-                        new Promise((resolve) => {
-                            setTimeout(() => resolve(), 2000);
-                        }),
-                    ]).then(() => {
-                        // Reload if there was no error.
-                        window.location.reload();
-                    }).catch((err) => {
-                        console.error('Error while registering service worker:', err);
-                    });
-                } else {
-                    // Display the message as usual
-                    const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-                    displayFailureNotice(missingMsg + missing.join('\n'));
-                }
+        // full screen the game ----------------------------------------------------------
+        function applycanvasmode() {
+            let w = 0;
+            let h = 0;
+            let maxW = window.innerWidth;
+            let maxH = window.innerHeight;
+            if ((maxW * 0.75) > maxH) {
+                h = maxH;
+                w = Math.floor((maxH / 3) * 4);
             } else {
-                setStatusMode('progress');
-                engine.startGame({
-                    'onProgress': function (current, total) {
-                        if (current > 0 && total > 0) {
-                            statusProgress.value = current;
-                            statusProgress.max = total;
-                        } else {
-                            statusProgress.removeAttribute('value');
-                            statusProgress.removeAttribute('max');
-                        }
-                    },
-                }).then(() => {
-                    setStatusMode('hidden');
-                }, displayFailureNotice);
+                w = maxW;
+                h = Math.floor((maxW / 4) * 3);
             }
-        };
-        window.godotRunStart = run;
-    </script>
-</body>
+            try {
+            document.querySelector("#gameCanvas").style.width = w + "px";
+            document.querySelector("#gameCanvas").style.height = h + "px";
+            document.querySelector("#gameVideo").style.width = w + "px";
+            document.querySelector("#gameVideo").style.height = h + "px";
+            document.querySelector("#upperCanvas").style.width = w + "px";
+            document.querySelector("#upperCanvas").style.height = h + "px";
+            } catch(e){}
+        }
+        setInterval(applycanvasmode, 100);
 
+        // support mobile ----------------------------------------------------------------
+        (function() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (!isMobile) {
+                return;
+            }
+            let i = setInterval(function() {
+                if (window.fullSetupComplete) {
+                    let zoneStatic = document.createElement("div");
+                    zoneStatic.style = "position: fixed; bottom: 0; left: 0; z-index: 9999; width: 500px; height: 500px;";
+                    let internal = document.createElement("div");
+                    internal.style = "position: relative; width: 100%; height: 100%;"
+                    zoneStatic.appendChild(internal);
+                    let joystick = nipplejs.create({
+                        mode: 'semi',
+                        zone: internal,
+                        color: 'red',
+                        catchDistance: 30
+                    });
+                    setTimeout(function() {
+                        joystick.on("dir", function(e, data) {
+                            let dirs = ["up", "down", "left", "right"];
+                            for (let o of dirs) {
+                                if (o !== data.direction.angle) {
+                                    fakeInput.up(o);
+                                } else {
+                                    fakeInput.down(o);
+                                }
+                            }
+                        });
+                        joystick.on("end", function() {
+                            let dirs = ["up", "down", "left", "right"];
+                            for (let o of dirs) {
+                                fakeInput.up(o);
+                            }
+                        });
+                    }, 100);
+                    document.body.appendChild(zoneStatic);
+                    const createButton = (text, key, bottom, right, bgColor) => {
+                        let button = document.createElement("div");
+                        button.style = `
+                    position: fixed; 
+                    bottom: ${bottom}; 
+                    right: ${right}; 
+                    width: 10vw; 
+                    height: 10vw; 
+                    background: ${bgColor}; 
+                    color: white; 
+                    touch-action: none; 
+                    z-index: 999999; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-family: sans-serif; 
+                    font-size: 3vw;
+                    border-radius: 50%;
+                `;
+                        button.innerText = text;
+                        button.addEventListener("touchstart", function(e) {
+                            e.preventDefault();
+                            fakeInput.down(key);
+                        });
+                        button.addEventListener("touchend", function(e) {
+                            e.preventDefault();
+                            fakeInput.up(key);
+                        });
+                        document.body.appendChild(button);
+                        return button;
+                    };
+
+                    createButton("OK", "ok", "5vw", "5vw", "#0f08");
+                    createButton("ESC", "escape", "5vw", "15vw", "#f008");
+                    createButton("TAG", "tag", "15vw", "15vw", "#00f8");
+                    createButton("RUN", "shift", "15vw", "5vw", "#f0f8");
+                    clearInterval(i);
+                }
+            }, 100);
+        })();
+    </script>
+    </body>
 </html>

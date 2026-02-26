@@ -5,30 +5,39 @@
   gtag('js', new Date());
 
   gtag('config', 'G-L7856P3VNT');
-</script><!DOCTYPE html>
-<html lang="en-us">
+</script><!doctype html>
+<html lang="en">
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@master/ultrakill/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | ULTRAKILL</title>
+    
+    
+    
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/state%20io/">
+    <title>state.io yt</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="format-detection" content="telephone-no" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width,height=device-height" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="ahujkgjYWpFG19oTpLNlow"></script>
     <style>
-        html,
-        body {
+        body,
+        html {
             margin: 0;
-            padding: 0;
-            overflow: hidden;
             height: 100%;
-            width: 100%;
+            overflow: hidden;
+            background: black;
         }
 
-        #unity-container {
+        #game-root {
+            position: absolute;
+        }
+
+        #game-canvas,
+        #game-root {
             width: 100%;
             height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
         }
     #sidebarad1,
 #sidebarad2 {
@@ -69,82 +78,41 @@
   display: block;
 }
 </style>
+    <script nonce="ahujkgjYWpFG19oTpLNlow">
+        (function (b) {
+            console.info("SDK", ytgame.SDK_VERSION);
+            var _loaded = 0;
+            Object.defineProperty(b, "loaded", {
+                set: function (v) {
+                    _loaded = v;
+                },
+                get: function () {
+                    return _loaded;
+                }
+            });
+            b.onLoaded = function (params) {
+                b.ready = true;
+                while (b.cbc.length) {
+                    var cb = b.cbc.pop();
+                    cb && cb(params);
+                }
+            };
+            ytgame.game.firstFrameReady();
+            b.params = b.params || {};
+            b.params.ytgame = ytgame;
+            b.onLoaded(ytgame);
+        })((window.__diffbus = {
+            ready: false,
+            cbc: [],
+            params: undefined
+        }));
+    </script>
+    <script defer="defer" src="main.js" nonce="ahujkgjYWpFG19oTpLNlow"></script>
+    <link href="main.css" rel="stylesheet" nonce="ahujkgjYWpFG19oTpLNlow">
 </head>
 
-<body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <div id='loading-text' style="color: black; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="unity-canvas" tabindex="-1" hidden></canvas>
-    <script src="Build/ultrakill.loader.js"></script>
-    <script>
-        var canvas = document.querySelector("#unity-canvas");
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-            // Mobile device style: fill the whole browser client area with the game canvas:
-            var meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-            document.getElementsByTagName('head')[0].appendChild(meta);
-            canvas.style.width = "100%";
-            canvas.style.height = "100%";
-            canvas.style.position = "fixed";
-            document.body.style.textAlign = "left";
-        } else {
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                canvas.style.width = window.innerWidth + "px";
-                canvas.style.height = window.innerHeight + "px";
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-        }
-
-        function mergeFiles(fileParts) {
-            return new Promise((resolve, reject) => {
-                let buffers = [];
-
-                function fetchPart(index) {
-                    if (index >= fileParts.length) {
-                        let mergedBlob = new Blob(buffers);
-                        let mergedFileUrl = URL.createObjectURL(mergedBlob);
-                        resolve(mergedFileUrl);
-                        return;
-                    }
-                    fetch(fileParts[index]).then((response) => response.arrayBuffer()).then((data) => {
-                        buffers.push(data);
-                        fetchPart(index + 1);
-                    }).catch(reject);
-                }
-                fetchPart(0);
-            });
-        }
-
-        function getParts(file, start, end) {
-            let parts = [];
-            for (let i = start; i <= end; i++) {
-                parts.push(file + ".part" + i);
-            }
-            return parts;
-        }
-        Promise.all([
-            mergeFiles(getParts("Build/ultrakill.data.unityweb", 1, 4)),
-            mergeFiles(getParts("Build/ultrakill.wasm.unityweb", 1, 2))
-        ]).then(([dataUrl, wasmurl]) => {
-            document.querySelector("#unity-canvas").hidden = false;
-            createUnityInstance(document.querySelector("#unity-canvas"), {
-                dataUrl: dataUrl,
-                frameworkUrl: "Build/ultrakill.framework.js.unityweb",
-                codeUrl: wasmurl,
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "Hakita and Cake Logic",
-                productName: "ULTRAKILL",
-                productVersion: "1.4",
-                // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-                // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-            }).then((e) => {
-                document.querySelector("#loading-text").remove();
-            });
-        });
-    </script>
+<body>
+    <div id="game-root"><canvas id="game-canvas"></canvas></div>
 <div id="sidebarad1">
   <div class="sidebar-close" onclick="this.parentElement.style.display='none'">✕</div>
 </div>
