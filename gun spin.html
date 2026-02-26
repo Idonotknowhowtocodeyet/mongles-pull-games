@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>Mathematics Practice</title>
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/gunspin/">
+    
+    <style>
+      body { margin: 0; background-color: #000; overflow: hidden; }
+      #gameContainer { width: 100vw; height: 100vh; }
+      canvas { width: 100%; height: 100%; display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="gameContainer"></div>
+
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      // This tells the loader which game version to boot up
+      var gameInstance = UnityLoader.instantiate(
+        "gameContainer", 
+        "Build/GunSpin%20WebGL%20FinalVersion.json"
+      );
+
+      // Simple Fullscreen function
+      function goFullScreen() {
+        gameInstance.SetFullscreen(1);
+      }
+    </script>
+  </body>
+</html>
