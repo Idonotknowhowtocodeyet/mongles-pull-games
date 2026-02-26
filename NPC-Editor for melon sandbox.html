@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NPC Editor</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --selection-color: #ff3333;
+            --border-color: #333;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            height: 100dvh; 
+            display: flex; flex-direction: column;
+            overflow: hidden; user-select: none;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 8px 15px;
+            background-color: var(--panel-color);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+        }
+
+        .header-left {
+            display: flex; gap: 10px;
+        }
+
+        h1 {
+            margin: 0; font-size: 0.9rem; font-weight: 500; color: #666;
+            position: absolute; left: 50%; transform: translateX(-50%);
+            pointer-events: none; opacity: 0.5;
+        }
+        @media (max-width: 350px) { h1 { display: none; } }
+
+        /* Top Buttons (Undo/Redo/Crop) */
+        .icon-btn {
+            background: #333;
+            border: 1px solid #555;
+            color: #ddd;
+            border-radius: 6px;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+        
+        .icon-btn:active { transform: scale(0.95); background: #444; }
+        .icon-btn span { font-size: 20px; }
+
+        .crop-btn {
+            display: flex; align-items: center; gap: 5px;
+            padding: 0 10px; width: auto;
+        }
+        .crop-btn label { font-size: 12px; cursor: pointer; display: none; }
+        .crop-btn.active { background-color: var(--selection-color); border-color: var(--selection-color); color: white; }
+        /* Show text only on wider screens */
+        @media (min-width: 400px) { .crop-btn label { display: block; } }
+
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex-grow: 1; 
+            display: flex; justify-content: center; align-items: center;
+            position: relative; background-color: #000;
+            overflow: hidden; touch-action: none;
+        }
+
+        .canvas-frame {
+            padding: 1px;
+            border: 1px solid #555;
+            background-color: #222;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .canvas-container {
+            position: relative;
+            background-image: 
+                linear-gradient(45deg, #2a2a2a 25%, transparent 25%), 
+                linear-gradient(-45deg, #2a2a2a 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #2a2a2a 75%), 
+                linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+            background-size: 20px 20px;
+            image-rendering: pixelated; 
+        }
+
+        canvas {
+            display: block; position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+        #overlayCanvas { pointer-events: none; z-index: 100; }
+
+
+        /* --- BOTTOM TOOLBAR --- */
+        .bottom-toolbar {
+            background-color: var(--panel-color);
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+            padding: 10px 0 20px 0; 
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            
+            /* SCROLL LOGIC */
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE */
+        }
+        .bottom-toolbar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        /* Spacer to add padding inside scroll area */
+        .toolbar-content {
+            display: flex;
+            padding: 0 15px;
+            gap: 15px; /* Space between tools */
+            min-width: 100%; /* Ensure it fills width */
+            justify-content: center; /* Center if items fit screen */
+        }
+        /* If items overflow, justify-content: center breaks scroll, so simple hack: */
+        @media (max-width: 500px) { .toolbar-content { justify-content: flex-start; } }
+
+        .tool-btn {
+            background: transparent; border: none;
+            color: #888; cursor: pointer;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 5px; border-radius: 8px; transition: 0.1s;
+            width: 55px; flex-shrink: 0; /* Don't squash buttons */
+        }
+        
+        .tool-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .tool-btn span { font-size: 24px; margin-bottom: 2px; }
+        .tool-btn label { font-size: 10px; }
+        
+        .tool-btn.active { color: var(--accent-color); background-color: rgba(187, 134, 252, 0.1); }
+        .save-btn { color: #03dac6 !important; }
+
+        /* Color Picker Styles */
+        .color-wrapper {
+            position: relative; width: 32px; height: 32px;
+            border-radius: 50%; overflow: hidden;
+            border: 2px solid #666; margin-bottom: 2px;
+        }
+        input[type="color"] {
+            position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%; cursor: pointer; border: none;
+        }
+
+        .opacity-control {
+            display: flex; flex-direction: column; align-items: center; width: 50px; flex-shrink: 0;
+        }
+        input[type="range"] { width: 100%; height: 3px; accent-color: var(--accent-color); }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <button class="icon-btn" id="btnUndo" title="Undo">
+            <span class="material-symbols-outlined">undo</span>
+        </button>
+        <button class="icon-btn" id="btnRedo" title="Redo">
+            <span class="material-symbols-outlined">redo</span>
+        </button>
+    </div>
+    
+    <h1>NPC Editor</h1>
+
+    <button class="icon-btn crop-btn" id="btnCropMode">
+        <span class="material-symbols-outlined">crop</span>
+        <label>Crop</label>
+    </button>
+</header>
+
+<div class="workspace">
+    <div class="canvas-frame">
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="templateCanvas"></canvas>
+            <canvas id="drawingCanvas"></canvas>
+            <canvas id="overlayCanvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-toolbar" id="toolbar">
+    <div class="toolbar-content">
+        <!-- Color -->
+        <div class="tool-btn" id="toolColor">
+            <div class="color-wrapper">
+                <input type="color" id="colorPicker" value="#ffffff">
+            </div>
+            <label>Color</label>
+        </div>
+
+        <!-- Brush -->
+        <button class="tool-btn active" id="btnBrush">
+            <span class="material-symbols-outlined">brush</span>
+            <label>Brush</label>
+        </button>
+        
+        <!-- Eyedropper (Pipette) -->
+        <button class="tool-btn" id="btnPipette">
+            <span class="material-symbols-outlined">colorize</span>
+            <label>Pipette</label>
+        </button>
+
+        <!-- Eraser -->
+        <button class="tool-btn" id="btnEraser">
+            <span class="material-symbols-outlined">ink_eraser</span>
+            <label>Eraser</label>
+        </button>
+
+        <!-- Opacity -->
+        <div class="opacity-control">
+            <span class="material-symbols-outlined" style="font-size: 20px; color:#666">visibility</span>
+            <input type="range" id="templateOpacity" min="0" max="1" step="0.1" value="0.5">
+        </div>
+
+        <!-- Clear -->
+        <button class="tool-btn" id="btnClear">
+            <span class="material-symbols-outlined">delete</span>
+            <label>Clear</label>
+        </button>
+
+        <!-- Save -->
+        <button class="tool-btn save-btn" id="btnSave">
+            <span class="material-symbols-outlined">download</span>
+            <label>Save</label>
+        </button>
+    </div>
+</div>
+
+<script>
+    const TEMPLATE_SRC = 'template1.png';
+    
+    // Elements
+    const container = document.getElementById('canvasContainer');
+    const tCanvas = document.getElementById('templateCanvas');
+    const dCanvas = document.getElementById('drawingCanvas');
+    const oCanvas = document.getElementById('overlayCanvas');
+    
+    const tCtx = tCanvas.getContext('2d');
+    const dCtx = dCanvas.getContext('2d', { willReadFrequently: true }); // Optimized for picking
+    const oCtx = oCanvas.getContext('2d');
+
+    // UI Elements
+    const colorPicker = document.getElementById('colorPicker');
+    const btnBrush = document.getElementById('btnBrush');
+    const btnEraser = document.getElementById('btnEraser');
+    const btnPipette = document.getElementById('btnPipette');
+    const btnClear = document.getElementById('btnClear');
+    const btnSave = document.getElementById('btnSave');
+    const btnCropMode = document.getElementById('btnCropMode');
+    const btnUndo = document.getElementById('btnUndo');
+    const btnRedo = document.getElementById('btnRedo');
+    const opacityRange = document.getElementById('templateOpacity');
+    const toolbar = document.getElementById('toolbar');
+
+    // State
+    let currentTool = 'brush'; // brush, eraser, pipette
+    let isCropMode = false;
+    let isInputDown = false;
+    
+    // Selection State
+    let selStart = { x: 0, y: 0 };
+    let selRect = { x: 0, y: 0, w: 0, h: 0 };
+
+    // History State
+    const historyStack = [];
+    let historyStep = -1;
+    const MAX_HISTORY = 30;
+
+    // --- INITIALIZATION ---
+    const templateImg = new Image();
+    templateImg.src = TEMPLATE_SRC;
+
+    templateImg.onload = () => {
+        const realW = templateImg.width;
+        const realH = templateImg.height;
+
+        [tCanvas, dCanvas, oCanvas].forEach(c => {
+            c.width = realW; c.height = realH;
+        });
+
+        const screenW = Math.min(window.innerWidth * 0.9, 512);
+        const screenH = screenW * (realH / realW);
+        container.style.width = screenW + 'px';
+        container.style.height = screenH + 'px';
+
+        tCtx.imageSmoothingEnabled = false;
+        tCtx.drawImage(templateImg, 0, 0);
+        dCtx.imageSmoothingEnabled = false;
+        oCtx.imageSmoothingEnabled = false;
+        tCanvas.style.opacity = opacityRange.value;
+
+        // Save initial blank state
+        saveHistory();
+    };
+
+    templateImg.onerror = () => {
+        alert("Error: template1.png not found!");
+    };
+
+    // --- HORIZONTAL SCROLL ON PC ---
+    toolbar.addEventListener('wheel', (evt) => {
+        evt.preventDefault();
+        toolbar.scrollLeft += evt.deltaY;
+    });
+
+    // --- HISTORY SYSTEM (Undo/Redo) ---
+    function saveHistory() {
+        historyStep++;
+        // Remove redo steps if we draw something new
+        if (historyStep < historyStack.length) {
+            historyStack.length = historyStep;
+        }
+        // Save full image data (simple robust method)
+        historyStack.push(dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height));
+        
+        // Limit history size memory usage
+        if (historyStack.length > MAX_HISTORY) {
+            historyStack.shift();
+            historyStep--;
+        }
+        updateUndoUI();
+    }
+
+    function doUndo() {
+        if (historyStep > 0) {
+            historyStep--;
+            dCtx.putImageData(historyStack[historyStep], 0, 0);
+            updateUndoUI();
+        }
+    }
+
+    function doRedo() {
+        if (historyStep < historyStack.length - 1) {
+            historyStep++;
+            dCtx.putImageData(historyStack[historyStep], 0, 0);
+            updateUndoUI();
+        }
+    }
+
+    function updateUndoUI() {
+        btnUndo.style.opacity = historyStep > 0 ? 1 : 0.3;
+        btnRedo.style.opacity = historyStep < historyStack.length - 1 ? 1 : 0.3;
+    }
+
+    btnUndo.addEventListener('click', doUndo);
+    btnRedo.addEventListener('click', doRedo);
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+            e.preventDefault(); doUndo();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+            e.preventDefault(); doRedo();
+        }
+    });
+
+
+    // --- DRAWING & TOOLS ---
+    
+    function getCoords(evt) {
+        const rect = dCanvas.getBoundingClientRect();
+        let clientX, clientY;
+        if (evt.touches && evt.touches.length > 0) {
+            clientX = evt.touches[0].clientX; clientY = evt.touches[0].clientY;
+        } else {
+            clientX = evt.clientX; clientY = evt.clientY;
+        }
+        const x = Math.floor(((clientX - rect.left) / rect.width) * dCanvas.width);
+        const y = Math.floor(((clientY - rect.top) / rect.height) * dCanvas.height);
+        return { x, y };
+    }
+
+    function handleStart(e) {
+        isInputDown = true;
+        const pos = getCoords(e);
+        
+        if (isCropMode) {
+            selStart = pos;
+            selRect = { x: pos.x, y: pos.y, w: 0, h: 0 };
+            drawSelectionOverlay();
+        } else if (currentTool === 'pipette') {
+            pickColor(pos.x, pos.y);
+        } else {
+            // Painting started
+            paintPixel(pos.x, pos.y);
+        }
+    }
+
+    function handleMove(e) {
+        if (!isInputDown) return;
+        const pos = getCoords(e);
+
+        if (isCropMode) {
+            let w = pos.x - selStart.x;
+            let h = pos.y - selStart.y;
+            selRect = {
+                x: w < 0 ? pos.x : selStart.x,
+                y: h < 0 ? pos.y : selStart.y,
+                w: Math.abs(w) + 1, h: Math.abs(h) + 1
+            };
+            drawSelectionOverlay();
+        } else if (currentTool === 'pipette') {
+            pickColor(pos.x, pos.y);
+        } else {
+            paintPixel(pos.x, pos.y);
+        }
+    }
+
+    function handleEnd() {
+        if (isInputDown && !isCropMode && currentTool !== 'pipette') {
+            // Finished a stroke, save history
+            saveHistory();
+        }
+        isInputDown = false;
+        dCtx.beginPath();
+    }
+
+    function paintPixel(x, y) {
+        if (x < 0 || x >= dCanvas.width || y < 0 || y >= dCanvas.height) return;
+        if (currentTool === 'eraser') {
+            dCtx.clearRect(x, y, 1, 1);
+        } else {
+            dCtx.fillStyle = colorPicker.value;
+            dCtx.fillRect(x, y, 1, 1);
+        }
+    }
+
+    // --- EYEDROPPER LOGIC ---
+    function pickColor(x, y) {
+        if (x < 0 || x >= dCanvas.width || y < 0 || y >= dCanvas.height) return;
+        
+        const pixel = dCtx.getImageData(x, y, 1, 1).data;
+        // If transparent, maybe ignore or pick white? Let's ignore empty pixels.
+        if (pixel[3] === 0) return; 
+
+        // Convert RGB to Hex
+        const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1);
+        colorPicker.value = hex;
+        
+        // Visual feedback could go here
+    }
+
+    // Convert click/touch events
+    dCanvas.addEventListener('mousedown', handleStart);
+    dCanvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+    dCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, {passive: false});
+    dCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, {passive: false});
+    dCanvas.addEventListener('touchend', handleEnd);
+
+
+    // --- TOOL SWITCHING ---
+    function setTool(tool) {
+        currentTool = tool;
+        btnBrush.classList.remove('active');
+        btnEraser.classList.remove('active');
+        btnPipette.classList.remove('active');
+
+        if (tool === 'brush') btnBrush.classList.add('active');
+        if (tool === 'eraser') btnEraser.classList.add('active');
+        if (tool === 'pipette') btnPipette.classList.add('active');
+    }
+
+    btnBrush.addEventListener('click', () => setTool('brush'));
+    btnEraser.addEventListener('click', () => setTool('eraser'));
+    
+    // Pipette: Selects color then auto-switches back to brush on mouseup is standard,
+    // but here we keep it simple: Select mode, pick, then User clicks Brush.
+    // OR: Auto-switch after pick (Better UX).
+    btnPipette.addEventListener('click', () => setTool('pipette'));
+    
+    // Modified handleEnd to switch back from pipette
+    const originalHandleEnd = handleEnd;
+    handleEnd = function() {
+        originalHandleEnd();
+        // If we were using pipette and picked a color, switch back to brush
+        if (currentTool === 'pipette') {
+            setTool('brush');
+        }
+    };
+
+    // Crop Toggle
+    btnCropMode.addEventListener('click', () => {
+        isCropMode = !isCropMode;
+        if (isCropMode) {
+            btnCropMode.classList.add('active');
+            btnSave.querySelector('label').innerText = "Save Part";
+            // Visual disable
+            [btnBrush, btnEraser, btnPipette, document.getElementById('toolColor')].forEach(el => {
+                el.style.opacity = 0.3; el.style.pointerEvents = 'none';
+            });
+        } else {
+            btnCropMode.classList.remove('active');
+            btnSave.querySelector('label').innerText = "Save";
+            // Visual enable
+            [btnBrush, btnEraser, btnPipette, document.getElementById('toolColor')].forEach(el => {
+                el.style.opacity = 1; el.style.pointerEvents = 'auto';
+            });
+            oCtx.clearRect(0, 0, oCanvas.width, oCanvas.height);
+            selRect = {x:0, y:0, w:0, h:0};
+        }
+    });
+
+    // Helper: Draw selection box
+    function drawSelectionOverlay() {
+        oCtx.clearRect(0, 0, oCanvas.width, oCanvas.height);
+        if (selRect.w > 0 && selRect.h > 0) {
+            oCtx.strokeStyle = '#ff3333'; oCtx.lineWidth = 1;
+            oCtx.strokeRect(selRect.x + 0.5, selRect.y + 0.5, selRect.w - 1, selRect.h - 1);
+            oCtx.fillStyle = 'rgba(255, 50, 50, 0.2)';
+            oCtx.fillRect(selRect.x, selRect.y, selRect.w, selRect.h);
+        }
+    }
+
+    // Other controls
+    btnClear.addEventListener('click', () => {
+        if(confirm('Clear all?')) {
+            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+            saveHistory();
+        }
+    });
+    opacityRange.addEventListener('input', (e) => tCanvas.style.opacity = e.target.value);
+    colorPicker.addEventListener('change', () => setTool('brush'));
+
+    // Save
+    btnSave.addEventListener('click', () => {
+        const link = document.createElement('a');
+        if (isCropMode && selRect.w > 0 && selRect.h > 0) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = selRect.w; tempCanvas.height = selRect.h;
+            tempCanvas.getContext('2d').drawImage(dCanvas, selRect.x, selRect.y, selRect.w, selRect.h, 0, 0, selRect.w, selRect.h);
+            link.download = `part_${selRect.x}_${selRect.y}.png`;
+            link.href = tempCanvas.toDataURL('image/png');
+        } else {
+            if (isCropMode) alert("Select an area first!");
+            link.download = 'npc_skin_full.png';
+            link.href = dCanvas.toDataURL('image/png');
+        }
+        link.click();
+    });
+
+</script>
+</body>
+</html>
