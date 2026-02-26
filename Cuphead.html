@@ -9,12 +9,10 @@
 <html lang="en-us">
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/aukak/hollow-knight@2fc2e7149f0d5b2609b135ab48f00fd973930635/">
+    <base href="https://cdn.jsdelivr.net/gh/web-ports/cuphead@main/">
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Hollow Knight</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <title>Unity WebGL Player | Cuphead</title>
     <style>
         html,
         body {
@@ -25,12 +23,13 @@
             background: #231F20;
         }
 
-        #unity-container {
+        #unity-canvas {
+            position: fixed;
+            inset: 0;
             width: 100%;
             height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
+            display: none;
+            background: #231F20;
         }
     #sidebarad1,
 #sidebarad2 {
@@ -75,89 +74,41 @@
 
 <body>
     <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
-    <div hidden id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
-        <div id="unity-mobile-warning"> WebGL builds are not supported on mobile devices. </div>
-    </div>
-    <script>
-        const DB_NAME = "cachedb";
-        const STORE_NAME = "files";
-
-        function openCacheDB() {
-            return new Promise((resolve, reject) => {
-                const req = indexedDB.open(DB_NAME, 1);
-
-                req.onupgradeneeded = () => {
-                    const db = req.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME);
-                    }
-                };
-
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
-            });
-        }
-
-        async function saveToCache(key, blob) {
-            const db = await openCacheDB();
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readwrite");
-                tx.objectStore(STORE_NAME).put(blob, key);
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
-            });
-        }
-
-        async function loadFromCache(key) {
-            const db = await openCacheDB();
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readonly");
-                const req = tx.objectStore(STORE_NAME).get(key);
-                req.onsuccess = () => resolve(req.result || null);
-                req.onerror = () => reject(req.error);
-            });
-        }
-
-        async function deleteFromCache(key) {
-            const db = await openCacheDB();
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, "readwrite");
-                tx.objectStore(STORE_NAME).delete(key);
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
-            });
-        }
-    </script>
+    <div id="unityContainer"></div>
+    <script src="Build/UnityLoader.js"></script>
     <script>
         var loadingText = document.querySelector("#loading-text");
+    
         let totalBytes = 0;
         let loadedBytes = 0;
-
+    
+        async function getSize(url) {
+            try {
+                const res = await fetch(url, { method: "HEAD" });
+                return parseInt(res.headers.get("Content-Length") || "0", 10);
+            } catch {
+                return 0;
+            }
+        }
+    
         async function fetchWithProgress(url) {
             const response = await fetch(url);
             const reader = response.body.getReader();
             let chunks = [];
             let received = 0;
+    
             while (true) {
-                const {
-                    done,
-                    value
-                } = await reader.read();
+                const { done, value } = await reader.read();
                 if (done) break;
                 received += value.length;
                 loadedBytes += value.length;
                 chunks.push(value);
+    
                 let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
-                let mbTotal = '912.81';
+                let mbTotal = '2127.52';
                 loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`;
             }
+    
             let fullBuffer = new Uint8Array(received);
             let offset = 0;
             for (let chunk of chunks) {
@@ -166,19 +117,13 @@
             }
             return fullBuffer.buffer;
         }
-        async function mergeFiles(fileParts, cacheKey) {
-            const cached = await loadFromCache(cacheKey);
-            if (cached) {
-                return URL.createObjectURL(cached);
-            }
-            const buffers = await Promise.all(
-                fileParts.map(part => fetchWithProgress(part))
-            );
+    
+        async function mergeFiles(fileParts) {
+            const buffers = await Promise.all(fileParts.map(part => fetchWithProgress(part)));
             const mergedBlob = new Blob(buffers);
-            await saveToCache(cacheKey, mergedBlob);
             return URL.createObjectURL(mergedBlob);
         }
-
+    
         function getParts(file, start, end) {
             let parts = [];
             for (let i = start; i <= end; i++) {
@@ -186,75 +131,69 @@
             }
             return parts;
         }
+    
+        function resizeUnityContainer() {
+            var container = document.getElementById("unityContainer");
+            container.style.width = window.innerWidth + "px";
+            container.style.height = window.innerHeight + "px";
+        }
+    
         (async () => {
-            const [dataUrl, wasmurl] = await Promise.all([
-                mergeFiles(getParts("Build/hktruffled.data", 1, 45), "hktruffled.data"),
-                mergeFiles(getParts("Build/hktruffled.wasm", 1, 2), "hktruffled.wasm"),
+            const allParts = [
+                ...getParts("Build/Build.asm.code.unityweb", 1, 3),
+                ...getParts("Build/Build.data.unityweb", 1, 102),
+                ...getParts("Build/Build.wasm.code.unityweb", 1, 2),
+            ];
+    
+            const sizes = await Promise.all(allParts.map(getSize));
+            totalBytes = sizes.reduce((a, b) => a + b, 0);
+    
+            const [asmurl, dataUrl, wasmurl] = await Promise.all([
+                mergeFiles(getParts("Build/Build.asm.code.unityweb", 1, 3)),
+                mergeFiles(getParts("Build/Build.data.unityweb", 1, 102)),
+                mergeFiles(getParts("Build/Build.wasm.code.unityweb", 1, 2)),
             ]);
-            var buildUrl = "Build";
-            var loaderUrl = buildUrl + "/hktruffled.loader.js";
-            var config = {
-                dataUrl: dataUrl,
-                frameworkUrl: buildUrl + "/hktruffled.framework.js",
-                codeUrl: wasmurl,
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "Team Cherry & Truffled",
-                productName: "Hollow Knight",
-                productVersion: "1.1",
+    
+            const json = {
+                "companyName": "SpanishFreddy",
+                "productName": "Cuphead",
+                "dataUrl": dataUrl,
+                "wasmCodeUrl": wasmurl,
+                "wasmFrameworkUrl": "Build.wasm.framework.unityweb",
+                "asmCodeUrl": asmurl,
+                "asmMemoryUrl": "Build.asm.memory.unityweb",
+                "asmFrameworkUrl": "Build.asm.framework.unityweb",
+                "TOTAL_MEMORY": 100000000,
+                "graphicsAPI": ["WebGL 2.0"],
+                "webglContextAttributes": { "preserveDrawingBuffer": false },
+                "splashScreenStyle": "Dark",
+                "backgroundColor": "#231F20"
             };
-            var container = document.querySelector("#unity-container");
-            container.hidden = false;
-            var canvas = document.querySelector("#unity-canvas");
-            var loadingBar = document.querySelector("#unity-loading-bar");
-            var progressBarFull = document.querySelector("#unity-progress-bar-full");
-            var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-            var mobileWarning = document.querySelector("#unity-mobile-warning");
-            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                container.className = "unity-mobile";
-                config.devicePixelRatio = 1;
-                mobileWarning.style.display = "block";
-                setTimeout(() => {
-                    mobileWarning.style.display = "none";
-                }, 5000);
-            } else {
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    var meta = document.createElement('meta');
-                    meta.name = 'viewport';
-                    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-                    document.getElementsByTagName('head')[0].appendChild(meta);
-                    container.className = "unity-mobile";
-                    canvas.className = "unity-mobile";
-                } else {
-                    function resizeCanvas() {
-                        canvas.width = window.innerWidth;
-                        canvas.height = window.innerHeight;
-                        canvas.style.width = window.innerWidth + "px";
-                        canvas.style.height = window.innerHeight + "px";
-                    }
-                    resizeCanvas();
-                    window.addEventListener('resize', resizeCanvas);
-                }
+    
+            let blob = new Blob([JSON.stringify(json)], { type: "application/json" });
+            let blobUrl = URL.createObjectURL(blob);
+            window.addEventListener("resize", resizeUnityContainer);
+    
+            UnityLoader.instantiate("unityContainer", json, {
+                url: blobUrl,
+                Module: {
+                    onRuntimeInitialized: function () {
+                        resizeUnityContainer();
+                        document.querySelector("#loading-text").remove();
+                    },
+                },
+            });
+    
+            function resizeCanvas() {
+                var container = document.getElementById("unityContainer");
+                container.style.width = window.innerWidth + "px";
+                container.style.height = window.innerHeight + "px";
+                setTimeout(resizeCanvas, 1000);
             }
-            loadingBar.style.display = "block";
-            var script = document.createElement("script");
-            script.src = loaderUrl;
-            script.onload = () => {
-                createUnityInstance(canvas, config, (progress) => {
-                    progressBarFull.style.width = 100 * progress + "%";
-                }).then((unityInstance) => {
-                    loadingText.remove();
-                    loadingBar.style.display = "none";
-                    canvas.style.display = "block";
-                }).catch(async (message) => {
-                    await deleteFromCache("hktruffled.wasm");
-                    alert(message);
-                });
-
-            };
-            document.body.appendChild(script);
+            resizeCanvas();
         })();
     </script>
-
+    
 <div id="sidebarad1">
   <div class="sidebar-close" onclick="this.parentElement.style.display='none'">✕</div>
 </div>
