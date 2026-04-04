@@ -508,667 +508,6 @@
                 <button id="adminBtn" class="btn btn-purple" style="display:none; border-color:var(--purple);" onclick="toggleModal('adminM')">⚡ OVERSEER</button>
                 <button id="mongleAdminBtn" class="btn" style="display:none; background:linear-gradient(45deg,#ff00ff,#00ffff); color:#000; font-weight:bold;" onclick="toggleModal('adminM'); setTimeout(toggleMonglePanel, 100);">👑 MONGLE</button>
                 <button class="btn btn-dark" onclick="toggleModal('settingsM')">⚙️</button>
-                <button class="btn btn-red" id="panicBtn" onclick="panicTrigger()">PANIC</button>
-            </div>
-        </div>
-
-        <!-- GAME GRID -->
-        <div id="grid" class="game-grid"><div class="loading">LOADING DATABASE...</div></div>
-
-        <!-- BOTTOM BAR -->
-        <div class="bottom-bar">
-            <span><span class="status-dot"></span><span id="onlineCount">0 online</span></span>
-            <span id="currentActivity" style="flex:1; color:#333;">—</span>
-            <button id="chatToggleBtn" onclick="toggleChat()" style="position:relative;">
-                💬 CHAT
-                <span id="chatNotif" style="position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;border-radius:50%;width:14px;height:14px;font-size:8px;display:none;align-items:center;justify-content:center;"></span>
-            </button>
-        </div>
-    </div>
-
-    <!-- CHAT DRAWER -->
-    <div id="chatDrawer">
-        <div class="chat-header">
-            <span>💬 MONGLE CHAT</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-                <span id="chatOnlineCount" style="font-size:9px;color:#333;"></span>
-                <button onclick="toggleChat()" style="background:none;border:none;color:#555;cursor:pointer;font-size:16px;line-height:1;">✕</button>
-            </div>
-        </div>
-        <div id="chatMessages"></div>
-        <div id="emojiPicker">
-            <span onclick="insertEmoji('😂')">😂</span><span onclick="insertEmoji('💀')">💀</span><span onclick="insertEmoji('🔥')">🔥</span><span onclick="insertEmoji('👀')">👀</span><span onclick="insertEmoji('😭')">😭</span><span onclick="insertEmoji('🤣')">🤣</span><span onclick="insertEmoji('😈')">😈</span><span onclick="insertEmoji('💯')">💯</span><span onclick="insertEmoji('🗿')">🗿</span><span onclick="insertEmoji('⚡')">⚡</span><span onclick="insertEmoji('🎮')">🎮</span><span onclick="insertEmoji('👑')">👑</span><span onclick="insertEmoji('🥵')">🥵</span><span onclick="insertEmoji('🤯')">🤯</span><span onclick="insertEmoji('😎')">😎</span><span onclick="insertEmoji('🫡')">🫡</span><span onclick="insertEmoji('💅')">💅</span><span onclick="insertEmoji('🐀')">🐀</span><span onclick="insertEmoji('🌽')">🌽</span><span onclick="insertEmoji('🗣️')">🗣️</span>
-        </div>
-        <div id="chatReplyPreview">
-            <div>↩ replying to <span id="chatReplyName"></span>: <span id="chatReplyText" style="color:#555;"></span></div>
-            <button onclick="clearReply()">✕</button>
-        </div>
-        <div class="chat-input-row">
-            <button class="chat-emoji-btn" onclick="toggleEmojiPicker()">😊</button>
-            <input id="chatInput" placeholder="Message..." onkeydown="if(event.key==='Enter') sendChat()">
-            <button class="send-btn" onclick="sendChat()">↑</button>
-        </div>
-    </div>
-
-    <!-- ACHIEVEMENTS DRAWER -->
-    <div id="achDrawer">
-        <div class="ach-header">
-            <span>🎖️ ACHIEVEMENTS</span>
-            <button onclick="toggleAch()" style="background:none;border:none;color:#555;cursor:pointer;font-size:16px;">✕</button>
-        </div>
-        <div id="achList" class="ach-list"></div>
-    </div>
-
-    <!-- LEADERBOARD DRAWER -->
-    <div id="lbDrawer">
-        <div class="lb-header">
-            <span>🏆 LEADERBOARD</span>
-            <button onclick="toggleLB()" style="background:none;border:none;color:#555;cursor:pointer;font-size:16px;">✕</button>
-        </div>
-        <div class="lb-tabs">
-            <div class="lb-tab active" id="lbTab-plays" onclick="switchLBTab('plays')">MOST PLAYED</div>
-            <div class="lb-tab" id="lbTab-popular" onclick="switchLBTab('popular')">MOST POPULAR</div>
-            <div class="lb-tab" id="lbTab-least" onclick="switchLBTab('least')">LEAST PLAYED</div>
-            <div class="lb-tab" id="lbTab-users" onclick="switchLBTab('users')">TOP USERS</div>
-        </div>
-        <div id="lbContent" class="lb-content"></div>
-    </div>
-
-    <!-- ADMIN MODAL -->
-    <div id="adminM" class="modal" style="max-width:1500px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1c1c1c; padding-bottom:10px; margin-bottom:14px;">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <h3 style="margin:0; color:var(--primary); letter-spacing:2px;">⚡ OVERSEER</h3>
-                <div style="display:flex;gap:6px;align-items:center;">
-                    <span class="online-dot"></span>
-                    <span id="userCount" style="font-size:11px;color:#555;">0 users</span>
-                </div>
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button id="mongleBtn" class="btn btn-purple" style="display:none;" onclick="toggleMonglePanel()">⚡ MONGLE</button>
-                <button class="btn btn-dark" onclick="toggleModal('adminM')">✕ CLOSE</button>
-            </div>
-        </div>
-
-        <!-- MONGLE SUPERADMIN PANEL -->
-        <div id="monglePanel" style="display:none; margin-bottom:16px; background:#030303; border:2px solid #a020f033; padding:16px; border-radius:6px;">
-            <h4 class="mongle-badge" style="margin-top:0; font-size: 16px; text-align: center;">⚡ MONGLE SUPERADMIN v12.0 ⚡</h4>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px;">
-                <div class="stat-box"><div class="stat-value" id="statTotalUsers">0</div><div class="stat-label">ONLINE</div></div>
-                <div class="stat-box"><div class="stat-value" id="statBanned">0</div><div class="stat-label">BANNED</div></div>
-                <div class="stat-box"><div class="stat-value" id="statGames">0</div><div class="stat-label">GAMES</div></div>
-                <div class="stat-box"><div class="stat-value" id="statTotalPlays">0</div><div class="stat-label">TOTAL PLAYS</div></div>
-                <div class="stat-box"><div class="stat-value" id="statChatMsgs">0</div><div class="stat-label">CHAT MSGS</div></div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
-                <div>
-                    <div class="mongle-section">
-                        <h4>🏷️ GAME TAG MANAGER</h4>
-                        <div class="muted" style="margin-bottom:6px;">Select a game to tag it</div>
-                        <select id="tagGameSelect" class="input" style="margin:4px 0;"></select>
-                        <div style="margin:8px 0 4px; font-size:10px; color:#555; letter-spacing:1px;">BUILT-IN TAGS</div>
-                        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="tgPopular"> 🔥 Popular</label>
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="tgTrending"> 📈 Trending</label>
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="tgMulti"> 👥 Multiplayer</label>
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="tgNoLag"> ⚡ No-Lag</label>
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="tgNew"> ✨ New</label>
-                        </div>
-                        <div style="margin:8px 0 4px; font-size:10px; color:#555; letter-spacing:1px;">CUSTOM TAGS ON THIS GAME</div>
-                        <div id="customTagCheckboxes" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; min-height:20px;"></div>
-                        <button class="btn" onclick="saveGameTags()" style="width:100%; margin-bottom:8px;">SAVE TAGS</button>
-                        <hr style="border-color:#111; margin:10px 0;">
-                        <div style="margin-bottom:6px; font-size:10px; color:#555; letter-spacing:1px;">CREATE NEW CUSTOM TAG</div>
-                        <div style="display:flex; gap:6px; margin-bottom:6px;">
-                            <input id="newTagEmoji" class="input" placeholder="🏷️" style="margin:0; width:48px; text-align:center; font-size:16px;">
-                            <input id="newTagName" class="input" placeholder="Tag name" style="margin:0; flex:1;">
-                            <input id="newTagColor" type="color" value="#00ff41" style="width:36px; height:36px; border:none; background:none; cursor:pointer; padding:0;">
-                        </div>
-                        <button class="btn btn-blue" onclick="createCustomTag()" style="width:100%;">+ CREATE TAG</button>
-                        <hr style="border-color:#111; margin:10px 0;">
-                        <div style="margin-bottom:6px; font-size:10px; color:#555; letter-spacing:1px;">ALL CUSTOM TAGS</div>
-                        <div id="customTagList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
-                        <div id="tagGameSelectorHelper" style="margin-top:8px;"></div>
-                    </div>
-                    <div class="mongle-section">
-                        <h4>📊 GAME PLAY STATS</h4>
-                        <div style="display:flex; gap:6px; margin-bottom:8px;">
-                            <button class="btn btn-dark" onclick="showGameStats('top')" style="flex:1; font-size:9px;">TOP 10</button>
-                            <button class="btn btn-dark" onclick="showGameStats('bottom')" style="flex:1; font-size:9px;">BOTTOM 10</button>
-                        </div>
-                        <div id="gameStatsList" style="max-height:200px; overflow-y:auto; background:#000; border:1px solid #111; border-radius:4px;"></div>
-                    </div>
-                    <div class="mongle-section">
-                        <h4>🚫 BAN MANAGEMENT</h4>
-                        <input id="banComputerId" class="input" placeholder="Computer ID" style="margin:4px 0;">
-                        <input id="banReason" class="input" placeholder="Reason (optional)" style="margin:4px 0;">
-                        <div style="display:flex; gap:6px; margin-bottom: 8px;">
-                            <button class="btn btn-red" onclick="addBan()" style="flex:1;">BAN</button>
-                            <button class="btn btn-dark" onclick="toggleBanList()" style="flex:1;">VIEW</button>
-                        </div>
-                        <div id="banListContainer" class="ban-list" style="display:none;"></div>
-                    </div>
-
-                    <div class="mongle-section">
-                        <h4>📬 GAME REQUESTS</h4>
-                        <button class="btn btn-dark" onclick="loadGameRequests()" style="width:100%;margin-bottom:8px;font-size:10px;">🔄 LOAD REQUESTS</button>
-                        <div id="gameRequestsList" style="max-height:180px;overflow-y:auto;background:#000;border:1px solid #111;border-radius:4px;padding:6px;font-size:11px;color:#555;">Click load to see requests</div>
-                    </div>
-                </div>
-                <div>
-                    <div class="mongle-section">
-                        <h4>🎭 MEGA PRANK ARSENAL</h4>
-                        <div class="muted" style="margin-bottom:8px;">Select user in OVERSEER first</div>
-                        <div class="prank-grid" id="monglePrankGrid">
-                            <div class="prank-card" onclick="executePrank('shake')"><div class="prank-emoji">🌀</div><div class="prank-name">Shake</div></div>
-                            <div class="prank-card" onclick="executePrank('flip')"><div class="prank-emoji">🔄</div><div class="prank-name">Flip</div></div>
-                            <div class="prank-card" onclick="executePrank('jumpscare')"><div class="prank-emoji">😱</div><div class="prank-name">Jumpscare</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-teacher')"><div class="prank-emoji">📚</div><div class="prank-name">Teacher</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-wifi')"><div class="prank-emoji">📶</div><div class="prank-name">No WiFi</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-suspension')"><div class="prank-emoji">📋</div><div class="prank-name">Suspended</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-detention')"><div class="prank-emoji">🏫</div><div class="prank-name">Detention</div></div>
-                            <div class="prank-card" onclick="executePrank('laser-eyes')"><div class="prank-emoji">👁️</div><div class="prank-name">Laser</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-meet')"><div class="prank-emoji">📹</div><div class="prank-name">Meet Call</div></div>
-                            <div class="prank-card" onclick="executePrank('school-bell')"><div class="prank-emoji">🔔</div><div class="prank-name">Bell</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-printer')"><div class="prank-emoji">🖨️</div><div class="prank-name">Printer</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-win-update')"><div class="prank-emoji">💻</div><div class="prank-name">Win Update</div></div>
-                            <div class="prank-card" onclick="executePrank('among-us')"><div class="prank-emoji">🫘</div><div class="prank-name">Among Us</div></div>
-                            <div class="prank-card" onclick="executePrank('virus-scan')"><div class="prank-emoji">🛡️</div><div class="prank-name">Virus Scan</div></div>
-                            <div class="prank-card" onclick="executePrank('tilt-fall')"><div class="prank-emoji">📐</div><div class="prank-name">Tilt Fall</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-battery')"><div class="prank-emoji">🪫</div><div class="prank-name">Low Battery</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-minecraft')"><div class="prank-emoji">⛏️</div><div class="prank-name">Minecraft</div></div>
-                            <div class="prank-card" onclick="executePrank('confetti')"><div class="prank-emoji">🎉</div><div class="prank-name">Confetti</div></div>
-                            <div class="prank-card" onclick="executePrank('blackout')"><div class="prank-emoji">⬛</div><div class="prank-name">Blackout</div></div>
-                            <div class="prank-card" onclick="executePrank('matrix')"><div class="prank-emoji">💚</div><div class="prank-name">Matrix</div></div>
-                            <div class="prank-card" onclick="executePrank('disco')"><div class="prank-emoji">🕺</div><div class="prank-name">Disco</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-virus')"><div class="prank-emoji">🦠</div><div class="prank-name">Fake Virus</div></div>
-                            <div class="prank-card" onclick="executePrank('fake-fbi')"><div class="prank-emoji">🚨</div><div class="prank-name">FBI</div></div>
-                            <div class="prank-card" onclick="executePrank('mongle-takeover')"><div class="prank-emoji">👑</div><div class="prank-name">Takeover</div></div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="mongle-section">
-                        <h4>🏅 AWARD ACHIEVEMENT</h4>
-                        <select id="awardUserSelect" class="input" style="margin:4px 0;"></select>
-                        <select id="awardAchSelect" class="input" style="margin:4px 0;">
-                            <optgroup label="🏅 Core Awards">
-                                <option value="mongle_legend">👑 Mongle Legend</option>
-                                <option value="top_player">🏆 Top Player</option>
-                                <option value="hall_of_fame">⭐ Hall of Fame</option>
-                                <option value="vip">💎 VIP</option>
-                                <option value="goat">🐐 GOAT</option>
-                                <option value="gigachad">💪 Gigachad</option>
-                                <option value="built_different">🏗️ Built Different</option>
-                                <option value="certified_w">✅ Certified W</option>
-                                <option value="main_character">🎬 Main Character</option>
-                                <option value="sigma">🗿 Sigma</option>
-                                <option value="rizz_god">😎 Rizz God</option>
-                                <option value="pookie">🧸 Pookie</option>
-                                <option value="loyal_user">🫡 Loyal User</option>
-                                <option value="glitch_hunter">🐛 Glitch Hunter</option>
-                            </optgroup>
-                            <optgroup label="😂 Funny Awards">
-                                <option value="class_clown">🤡 Class Clown</option>
-                                <option value="chaos_agent">🌪️ Chaos Agent</option>
-                                <option value="nerd">🤓 Certified Nerd</option>
-                                <option value="npc">🤖 NPC</option>
-                                <option value="menace">😤 Menace</option>
-                                <option value="imposter">🟥 Sus</option>
-                                <option value="womp_womp">🎺 Womp Womp</option>
-                                <option value="ghost">👻 Ghost</option>
-                                <option value="yapper">💬 Yapper</option>
-                                <option value="sweat">🥵 Sweaty</option>
-                                <option value="copium">🫁 On Copium</option>
-                                <option value="rat">🐀 Rat</option>
-                                <option value="skill_issue">💀 Skill Issue</option>
-                                <option value="touched_grass">🌱 Touched Grass</option>
-                                <option value="most_wanted">🔴 Most Wanted</option>
-                                <option value="free_real_estate">🏠 Free Real Estate</option>
-                                <option value="ohio_rizz">🌽 Ohio Rizz</option>
-                                <option value="delulu">🛸 Delulu</option>
-                                <option value="slay">💅 Slay</option>
-                                <option value="based">🗣️ Based</option>
-                                <option value="mid">😐 Mid</option>
-                                <option value="brainrot">🧠 Brainrot</option>
-                            </optgroup>
-                            <optgroup label="🔒 Secret (manual)">
-                                <option value="pranked">😈 Pranked</option>
-                                <option value="pranked_5">🎭 Prank Magnet</option>
-                                <option value="pranked_10">🤡 Village Fool</option>
-                                <option value="survived">🛡️ Survivor</option>
-                                <option value="bsod_club">☠️ BSOD Club</option>
-                                <option value="kicked_out">🚪 Kicked Out</option>
-                                <option value="game_closed">🎮 Busted</option>
-                                <option value="panic_pressed">😰 Close Call</option>
-                                <option value="screen_shared">📺 Screen Shared</option>
-                                <option value="konami">⬆️ Konami Code</option>
-                                <option value="rickrolled">🎵 Rickrolled</option>
-                                <option value="matrix_mode">💊 Red Pill</option>
-                                <option value="easter_egg">🥚 Easter Egg</option>
-                                <option value="hacker">💻 1337 H4X0R</option>
-                                <option value="time_traveler">⏰ Time Traveler</option>
-                                <option value="cursed">👁️ Cursed</option>
-                                <option value="blessed">✨ Blessed</option>
-                            </optgroup>
-                            <optgroup label="🎉 Gen Z / Meme Awards">
-                                <option value="gyatt">👀 Gyatt</option>
-                                <option value="fanum_tax">🍔 Fanum Tax</option>
-                                <option value="kai_cenat">🎤 Mafiaaaa</option>
-                                <option value="griddy">💃 Hit The Griddy</option>
-                                <option value="ohio_final">🌽 Only In Ohio</option>
-                                <option value="sus">📮 Sussy Baka</option>
-                                <option value="bussin">🍗 Bussin</option>
-                                <option value="deadass">💀 Deadass</option>
-                                <option value="cap_detector">🧢 Cap Detector</option>
-                                <option value="salty">🧂 Salty</option>
-                                <option value="simp">💝 Certified Simp</option>
-                                <option value="down_bad">📉 Down Bad</option>
-                                <option value="big_brain">🧠 Big Brain</option>
-                                <option value="smooth_brain">🫠 Smooth Brain</option>
-                            </optgroup>
-                            <optgroup label="🏆 Event Awards">
-                                <option value="event_winner">🏆 Event Winner</option>
-                                <option value="first_place">🥇 First Place</option>
-                                <option value="second_place">🥈 Second Place</option>
-                                <option value="third_place">🥉 Third Place</option>
-                                <option value="participant">🎗️ Participant</option>
-                                <option value="holiday_2024">🎄 Holiday 2024</option>
-                                <option value="new_year">🎆 New Year</option>
-                                <option value="anniversary">🎂 Anniversary</option>
-                                <option value="beta_tester">🔬 Beta Tester</option>
-                                <option value="alpha_user">🅰️ Alpha User</option>
-                            </optgroup>
-                        </select>
-                        <div style="display:flex;gap:6px;">
-                            <button class="btn" onclick="awardAchToUser()" style="flex:1;">🏅 AWARD</button>
-                            <button class="btn btn-warn" onclick="massAwardAll()" style="flex:1;">📢 ALL</button>
-                        </div>
-                    </div>
-                    <div class="mongle-section">
-                        <h4>💬 CHAT CONTROLS</h4>
-                        <div style="display:flex;gap:6px;margin-bottom:8px;">
-                            <button class="btn btn-dark" id="muteChatBtn" onclick="toggleChatMute()" style="flex:1;">🔇 MUTE ALL</button>
-                            <button class="btn btn-dark" onclick="clearChat()" style="flex:1;">🗑️ CLEAR</button>
-                        </div>
-                        <label style="font-size:10px;color:#555;letter-spacing:1px;">SLOW MODE (seconds)</label>
-                        <div style="display:flex;gap:6px;margin-top:4px;">
-                            <input id="slowModeVal" type="number" class="input" min="0" max="300" value="0" style="margin:0;width:70px;">
-                            <button class="btn" onclick="setSlowMode()" style="flex:1;">SET</button>
-                        </div>
-                        <div id="slowModeStatus" style="font-size:10px;color:#555;margin-top:4px;"></div>
-                    </div>
-                    <div class="mongle-section">
-                        <h4>📝 USER NOTES</h4>
-                        <select id="noteUserSel" class="input" style="margin:4px 0;" onchange="loadUserNote()"></select>
-                        <textarea id="noteText" class="input" style="margin:4px 0; height:70px; resize:none;" placeholder="Notes about this user..."></textarea>
-                        <button class="btn btn-dark" onclick="saveUserNote()" style="width:100%;">SAVE NOTE</button>
-                        <div id="notesList" style="margin-top:8px; max-height:100px; overflow-y:auto;"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ROW 2: More MONGLE Features -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-top: 14px; border-top: 1px solid #1c1c1c; padding-top: 14px;">
-                <div class="mongle-section">
-                    <h4>🎯 QUICK ACTIONS</h4>
-                    <div style="display:grid; gap:6px;">
-                        <button class="btn btn-warn" onclick="massAwardAchievement('touched_grass')" style="font-size:10px;">🌱 Touch Grass All</button>
-                        <button class="btn btn-purple" onclick="massAwardAchievement('mongle_legend')" style="font-size:10px;">👑 Legend All</button>
-                        <button class="btn btn-red" onclick="massKickAll()" style="font-size:10px;">🚫 Kick Everyone</button>
-                        <button class="btn btn-dark" onclick="resetAllStats()" style="font-size:10px;">🔄 Reset Stats</button>
-                        <button class="btn" onclick="healAllUsers()" style="font-size:10px;">💚 Heal All</button>
-                    </div>
-                </div>
-                <div class="mongle-section">
-                    <h4>📊 ANALYTICS</h4>
-                    <div style="display:grid; gap:4px; font-size:11px;">
-                        <div style="display:flex;justify-content:space-between;padding:4px;background:#111;border-radius:4px;">
-                            <span>Peak Users Today</span>
-                            <span id="peakUsers" style="color:var(--primary);">0</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:4px;background:#111;border-radius:4px;">
-                            <span>Total Sessions</span>
-                            <span id="totalSessions" style="color:var(--primary);">0</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:4px;background:#111;border-radius:4px;">
-                            <span>Avg Session Time</span>
-                            <span id="avgSessionTime" style="color:var(--primary);">0m</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding:4px;background:#111;border-radius:4px;">
-                            <span>Games This Hour</span>
-                            <span id="gamesThisHour" style="color:var(--primary);">0</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-dark" onclick="refreshAnalytics()" style="width:100%;margin-top:6px;font-size:9px;">REFRESH</button>
-                </div>
-                <div class="mongle-section">
-                    <h4>🔧 SYSTEM TOOLS</h4>
-                    <div style="display:grid; gap:6px;">
-                        <button class="btn btn-dark" onclick="exportUserData()" style="font-size:10px;">📤 Export Data</button>
-                        <button class="btn btn-dark" onclick="importUserData()" style="font-size:10px;">📥 Import Data</button>
-                        <button class="btn btn-warn" onclick="clearAllCache()" style="font-size:10px;">🗑️ Clear Cache</button>
-                        <button class="btn btn-dark" onclick="viewSystemLogs()" style="font-size:10px;">📋 View Logs</button>
-                        <button class="btn btn-red" onclick="emergencyShutdown()" style="font-size:10px;">🚨 Emergency</button>
-                    </div>
-                </div>
-                <div class="mongle-section">
-                    <h4>🎨 SITE THEMES</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
-                        <button class="btn btn-dark" onclick="setGlobalTheme('matrix')" style="font-size:9px;padding:4px;">💚 Matrix</button>
-                        <button class="btn btn-dark" onclick="setGlobalTheme('cyberpunk')" style="font-size:9px;padding:4px;">💜 Cyber</button>
-                        <button class="btn btn-dark" onclick="setGlobalTheme('blood')" style="font-size:9px;padding:4px;">🔴 Blood</button>
-                        <button class="btn btn-dark" onclick="setGlobalTheme('ice')" style="font-size:9px;padding:4px;">🧊 Ice</button>
-                        <button class="btn btn-dark" onclick="setGlobalTheme('gold')" style="font-size:9px;padding:4px;">🥇 Gold</button>
-                        <button class="btn btn-dark" onclick="setGlobalTheme('rainbow')" style="font-size:9px;padding:4px;">🌈 Rainbow</button>
-                    </div>
-                    <hr style="border-color:#111;margin:8px 0;">
-                    <label style="font-size:9px;color:#555;">CUSTOM PRIMARY COLOR</label>
-                    <div style="display:flex;gap:4px;margin-top:4px;">
-                        <input type="color" id="customThemeColor" value="#00ff41" style="width:40px;height:28px;border:none;cursor:pointer;">
-                        <button class="btn" onclick="applyCustomTheme()" style="flex:1;font-size:9px;">APPLY</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ROW 3: Event Controls & Specials -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; border-top: 1px solid #1c1c1c; padding-top: 14px;">
-                <div class="mongle-section">
-                    <h4>🎪 EVENT MODE</h4>
-                    <div style="display:flex;gap:6px;margin-bottom:8px;">
-                        <input id="eventName" class="input" style="margin:0;flex:1;" placeholder="Event name...">
-                        <input type="color" id="eventColor" value="#ff00ff" style="width:36px;height:36px;border:none;cursor:pointer;">
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;">
-                        <button class="btn" onclick="startEvent()" style="font-size:10px;">🎉 START EVENT</button>
-                        <button class="btn btn-red" onclick="stopEvent()" style="font-size:10px;">🛑 STOP EVENT</button>
-                    </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
-                        <button class="btn btn-dark" onclick="setEventPreset('double_xp')" style="font-size:8px;padding:3px 6px;">2X XP</button>
-                        <button class="btn btn-dark" onclick="setEventPreset('free_achievements')" style="font-size:8px;padding:3px 6px;">FREE ACH</button>
-                        <button class="btn btn-dark" onclick="setEventPreset('party')" style="font-size:8px;padding:3px 6px;">PARTY</button>
-                        <button class="btn btn-dark" onclick="setEventPreset('chaos')" style="font-size:8px;padding:3px 6px;">CHAOS</button>
-                        <button class="btn btn-dark" onclick="setEventPreset('chill')" style="font-size:8px;padding:3px 6px;">CHILL</button>
-                    </div>
-                </div>
-                <div class="mongle-section">
-                    <h4>📣 ANNOUNCEMENT</h4>
-                    <textarea id="announcementText" class="input" style="margin:4px 0;height:50px;resize:none;" placeholder="Write announcement..."></textarea>
-                    <div style="display:flex;gap:4px;margin-bottom:6px;">
-                        <select id="announcementType" class="input" style="margin:0;flex:1;">
-                            <option value="info">ℹ️ Info</option>
-                            <option value="warning">⚠️ Warning</option>
-                            <option value="success">✅ Success</option>
-                            <option value="error">🚨 Alert</option>
-                            <option value="special">✨ Special</option>
-                        </select>
-                        <input type="number" id="announcementDuration" class="input" style="margin:0;width:60px;" value="10" min="5" max="60">
-                        <span style="font-size:10px;color:#555;align-self:center;">sec</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-                        <button class="btn" onclick="sendAnnouncement()" style="font-size:10px;">📢 SEND</button>
-                        <button class="btn btn-dark" onclick="clearAnnouncement()" style="font-size:10px;">🗑️ CLEAR</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN OVERSEER LAYOUT -->
-        <div style="display:grid; grid-template-columns:260px 1fr; gap:12px; min-height:500px;">
-            <!-- USER LIST SIDEBAR -->
-            <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;gap:6px;">
-                    <input type="text" id="adminSearchUser" class="input" style="margin:0;flex:1;" placeholder="Filter users..." oninput="filterUserList()">
-                    <button class="btn btn-dark" onclick="refreshPresence()" style="padding:6px 8px;">↻</button>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
-                    <button class="btn btn-warn" onclick="massAction('freeze')" style="font-size:9px;padding:4px;">❄️ ALL</button>
-                    <button class="btn btn-red" onclick="massAction('kick')" style="font-size:9px;padding:4px;">🚫 ALL</button>
-                    <button class="btn" onclick="massAction('prank')" style="font-size:9px;padding:4px;">😈 ALL</button>
-                </div>
-                <div class="u-sidebar" id="userList" style="flex:1; min-height:300px; overflow-y:auto;"></div>
-            </div>
-
-            <!-- RIGHT PANEL WITH TABS -->
-            <div style="display:flex; flex-direction:column; min-width:0;">
-                <div style="display:flex; border-bottom:1px solid #1c1c1c; margin-bottom:10px; gap:2px; flex-wrap:wrap;">
-                    <div class="lb-tab active" id="atab-intel" onclick="switchAdminTab('intel')" style="font-size:11px;">🔍 INTEL</div>
-                    <div class="lb-tab" id="atab-games" onclick="switchAdminTab('games')" style="font-size:11px;">🎮 GAMES</div>
-                    <div class="lb-tab" id="atab-actions" onclick="switchAdminTab('actions')" style="font-size:11px;">⚡ ACTIONS</div>
-                    <div class="lb-tab" id="atab-mass" onclick="switchAdminTab('mass')" style="font-size:11px;">💣 MASS</div>
-                    <div class="lb-tab" id="atab-broadcast" onclick="switchAdminTab('broadcast')" style="font-size:11px;">📢 BROADCAST</div>
-                </div>
-
-                <!-- INTEL TAB -->
-                <div id="apanel-intel" style="display:flex; flex-direction:column; gap:8px;">
-                    <div id="dossier" class="info-grid">Select a user to view intel...</div>
-                    <div id="preview" style="height:200px;border:1px solid #1c1c1c;border-radius:4px;background:#000 center/cover no-repeat;position:relative;">
-                        <div id="live-indicator" style="position:absolute;top:8px;right:8px;background:red;color:white;padding:3px 8px;border-radius:3px;font-size:9px;display:none;animation:blink 1s infinite;">● LIVE</div>
-                        <div id="previewEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#333;font-size:11px;text-align:center;pointer-events:none;">Select a user to see their live screen</div>
-                    </div>
-                    <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:6px;">
-                        <button class="btn" onclick="adminAct('capReq')">📸 SNAP</button>
-                        <button class="btn" onclick="adminAct('camReq')">🎥 CAM</button>
-                        <button class="btn" onclick="adminAct('gpsReq')">📍 GPS</button>
-                        <button class="btn" id="watchBtn" style="background:#004400; color:white;" onclick="toggleWatch()">👁️ WATCH</button>
-                        <button class="btn btn-dark" onclick="tagComputerId()">🏷️ TAG</button>
-                    </div>
-                </div>
-
-                <!-- GAME TABS TAB -->
-                <div id="apanel-games" style="display:none; flex-direction:column; gap:8px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between;">
-                        <span style="font-size:11px; color:#00cfff; letter-spacing:1px;">ACTIVE GAME SESSIONS</span>
-                        <span id="gameTabCount" style="font-size:10px; color:#555;">(0 active)</span>
-                    </div>
-                    <div id="gameTabList" style="overflow-y:auto; display:flex; flex-direction:column; gap:6px; min-height:60px; max-height:180px;"></div>
-                    <div style="border-top:1px solid #1c1c1c; padding-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
-                        <select id="gameTabUserSel" class="input" style="margin:0; flex:1; font-size:10px;"><option value="">-- Select user --</option></select>
-                        <button class="btn btn-red" onclick="adminCloseGame()">✖ CLOSE</button>
-                        <button class="btn btn-warn" onclick="adminDisableGame()">🚫 DISABLE</button>
-                        <button class="btn btn-dark" onclick="adminGameMsg()">📢 ALERT</button>
-                    </div>
-                    <div style="border-top:1px solid #1c1c1c; padding-top:8px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                            <div style="font-size:10px; color:#555; letter-spacing:1px;">⚡ LIVE ACTIVITY FEED</div>
-                            <div style="display:flex;gap:4px;">
-                                <button class="btn btn-dark" onclick="clearActivityFeed()" style="font-size:9px;padding:2px 6px;">CLEAR</button>
-                                <button class="btn btn-dark" id="feedPauseBtn" onclick="toggleFeedPause()" style="font-size:9px;padding:2px 6px;">PAUSE</button>
-                            </div>
-                        </div>
-                        <div id="activityFeed" style="height:160px;overflow-y:auto;background:#030303;border:1px solid #1c1c1c;border-radius:4px;padding:6px;font-size:10px;font-family:monospace;"></div>
-                        <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
-                            <button class="btn btn-dark" onclick="filterFeed('all')" id="filt-all" style="font-size:9px;padding:2px 6px;background:#1a1a1a;">ALL</button>
-                            <button class="btn btn-dark" onclick="filterFeed('game')" id="filt-game" style="font-size:9px;padding:2px 6px;">🎮</button>
-                            <button class="btn btn-dark" onclick="filterFeed('chat')" id="filt-chat" style="font-size:9px;padding:2px 6px;">💬</button>
-                            <button class="btn btn-dark" onclick="filterFeed('prank')" id="filt-prank" style="font-size:9px;padding:2px 6px;">😈</button>
-                            <button class="btn btn-dark" onclick="filterFeed('join')" id="filt-join" style="font-size:9px;padding:2px 6px;">🟢</button>
-                            <button class="btn btn-dark" onclick="filterFeed('ach')" id="filt-ach" style="font-size:9px;padding:2px 6px;">🏆</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ACTIONS TAB -->
-                <div id="apanel-actions" style="display:none; flex-direction:column; gap:8px;">
-                    <div style="font-size:10px; color:#555; letter-spacing:1px; margin-bottom:2px;">TARGET: <span id="actionTargetName" style="color:var(--primary);">none selected</span></div>
-                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px;">
-                        <button class="btn" style="background:#5500aa;" onclick="adminAct('reload')">↻ RELOAD</button>
-                        <button class="btn btn-warn" onclick="adminAct('frozen')">❄️ FREEZE</button>
-                        <button class="btn btn-warn" onclick="adminAct('bsod')">☠️ BSOD</button>
-                        <button class="btn btn-warn" onclick="adminAct('print')">🖨️ PRINT</button>
-                        <button class="btn btn-warn" onclick="adminAct('vibrate')">📳 VIBE</button>
-                        <button class="btn btn-red" onclick="adminAct('kicked')">🚫 KICK</button>
-                        <button class="btn btn-dark" onclick="adminCloseGameFor(selectedID)" style="grid-column:span 2;">🎮 CLOSE GAME</button>
-                        <button class="btn btn-dark" onclick="muteUser()" style="grid-column:span 2;">🔇 MUTE USER</button>
-                    </div>
-                    <div style="display:flex; gap:6px; margin-top:4px;">
-                        <input type="text" id="adminCommandInp" class="input" style="margin:0;" placeholder="Message / URL / Speak text...">
-                        <button class="btn" onclick="adminCustom('msg')">MSG</button>
-                        <button class="btn" onclick="adminCustom('speak')">🗣️</button>
-                        <button class="btn" onclick="adminCustom('redir')">↗</button>
-                        <button class="btn" onclick="adminCustom('openTab')">TAB</button>
-                    </div>
-                    <div id="adminErrorLog" style="max-height:80px; overflow-y:auto; background:#030303; border:1px solid #2b1f1f; padding:8px; color:#f7b7b7; font-size:11px; border-radius:4px;">No errors yet.</div>
-                    <button class="btn btn-dark" onclick="clearErrorLog()" style="font-size:9px; padding:3px 8px; align-self:flex-end;">CLEAR LOG</button>
-                </div>
-
-                <!-- MASS ACTIONS TAB -->
-                <div id="apanel-mass" style="display:none; flex-direction:column; gap:10px;">
-                    <div style="font-size:10px;color:#ff4757;letter-spacing:1px;padding:6px 8px;background:#1a0000;border:1px solid #ff475722;border-radius:4px;">⚠️ These actions affect ALL online users</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                        <button class="btn btn-warn" onclick="massAction('freeze')" style="padding:10px;">❄️ FREEZE ALL</button>
-                        <button class="btn btn-warn" onclick="massAction('unfreeze')" style="padding:10px;">🔓 UNFREEZE ALL</button>
-                        <button class="btn btn-warn" onclick="massAction('bsod')" style="padding:10px;">☠️ BSOD ALL</button>
-                        <button class="btn" onclick="massAction('reload')" style="padding:10px;background:#5500aa;">↻ RELOAD ALL</button>
-                        <button class="btn btn-red" onclick="massAction('kick')" style="padding:10px;">🚫 KICK ALL</button>
-                        <button class="btn btn-dark" onclick="massAction('closeGame')" style="padding:10px;">🎮 CLOSE ALL GAMES</button>
-                    </div>
-                    <div style="border-top:1px solid #1c1c1c;padding-top:8px;">
-                        <div style="font-size:10px;color:#555;letter-spacing:1px;margin-bottom:6px;">MASS PRANK</div>
-                        <select id="massPrankSelect" class="input" style="margin:0 0 8px;">
-                            <option value="shake">🌀 Shake</option>
-                            <option value="jumpscare">😱 Jumpscare</option>
-                            <option value="fake-teacher">📚 Teacher Alert</option>
-                            <option value="fake-wifi">📶 No WiFi</option>
-                            <option value="fake-suspension">📋 Suspension</option>
-                            <option value="laser-eyes">👁️ Laser Eyes</option>
-                            <option value="matrix">💚 Matrix</option>
-                            <option value="confetti">🎉 Confetti</option>
-                            <option value="disco">🕺 Disco</option>
-                            <option value="blackout">⬛ Blackout</option>
-                        </select>
-                        <button class="btn btn-warn" onclick="massAction('prank')" style="width:100%;padding:10px;">😈 PRANK EVERYONE</button>
-                    </div>
-                    <div style="border-top:1px solid #1c1c1c;padding-top:8px;">
-                        <div style="font-size:10px;color:#555;letter-spacing:1px;margin-bottom:6px;">MASS MESSAGE</div>
-                        <input id="massMsgInp" class="input" placeholder="Message to send to all users..." style="margin:0 0 8px;">
-                        <button class="btn" onclick="massAction('msg')" style="width:100%;">📢 SEND TO ALL</button>
-                    </div>
-                    <div style="border-top:1px solid #1c1c1c;padding-top:8px;">
-                        <div style="font-size:10px;color:#555;letter-spacing:1px;margin-bottom:6px;">SCHEDULED PRANK</div>
-                        <div style="display:flex;gap:6px;align-items:center;">
-                            <select id="schedPrankSelect" class="input" style="margin:0;flex:1;">
-                                <option value="shake">🌀 Shake</option>
-                                <option value="jumpscare">😱 Jumpscare</option>
-                                <option value="fake-teacher">📚 Teacher Alert</option>
-                                <option value="fake-wifi">📶 No WiFi</option>
-                                <option value="laser-eyes">👁️ Laser Eyes</option>
-                                <option value="confetti">🎉 Confetti</option>
-                                <option value="blackout">⬛ Blackout</option>
-                            </select>
-                            <select id="schedPrankDelay" class="input" style="margin:0;width:90px;">
-                                <option value="10">10s</option>
-                                <option value="30">30s</option>
-                                <option value="60">1 min</option>
-                                <option value="120">2 min</option>
-                                <option value="300">5 min</option>
-                            </select>
-                            <button class="btn btn-warn" onclick="schedulePrank()">⏱ SET</button>
-                        </div>
-                        <div id="scheduledPrankStatus" style="font-size:10px;color:#555;margin-top:4px;"></div>
-                    </div>
-                </div>
-
-                <!-- BROADCAST TAB -->
-                <div id="apanel-broadcast" style="display:none; flex-direction:column; gap:8px;">
-                    <div style="font-size:10px; color:#555; letter-spacing:1px;">POST ANNOUNCEMENT TO ALL USERS</div>
-                    <input id="adminUpdateInp" class="input" placeholder="Write announcement..." style="margin:0;">
-                    <button class="btn btn-warn" onclick="adminAddUpdate()" style="align-self:flex-start; padding:8px 20px;">📢 POST</button>
-                    <div style="border-top:1px solid #1c1c1c; padding-top:8px; font-size:10px; color:#555; letter-spacing:1px;">RECENT UPDATES</div>
-                    <div id="recentUpdatesAdmin" style="max-height:200px; overflow-y:auto; background:#030303; border:1px solid #1c1c1c; padding:8px; border-radius:4px; font-size:11px; color:#888;">Loading...</div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    </div>
-    <div id="freeze" style="display:none;">
-        <h1>❄️ SYSTEM PAUSED ❄️</h1>
-        <p>Contact Administrator</p>
-    </div>
-    <div id="bsod">:(
-        <br><br>Your PC ran into a problem and needs to restart.
-        <br><br><span style="font-size:18px">Stop Code: CRITICAL_PROCESS_DIED</span>
-    </div>
-    <div id="banned">
-        <h1>⛔ BANNED ⛔</h1>
-        <p>Your device has been permanently banned from MONGLE_OS.</p>
-        <p style="font-size:18px; margin-top:30px;">Computer ID: <span id="bannedDeviceId"></span></p>
-        <p style="font-size:14px; color:#888;">Contact system administrator to appeal.</p>
-    </div>
-
-    <!-- PANIC PNG OVERLAY -->
-    <div id="panicOverlay">
-        <img id="panicImg" src="" alt="">
-    </div>
-
-    <!-- LOGIN -->
-    <div id="loginOverlay">
-        <div id="loginCard">
-            <h2>MONGLE_OS</h2>
-            <div class="login-sub">v12.0 — ENTER YOUR NAME TO CONNECT</div>
-            <input type="text" id="username" class="input" placeholder="Who are you..." style="margin:0 0 10px; text-align:center; font-size:14px; letter-spacing:2px;" onkeydown="if(event.key==='Enter') initSession()" maxlength="20">
-            <div style="display:flex; gap:8px;">
-                <button class="btn" style="flex:1; padding:10px;" onclick="initSession()">⚡ CONNECT</button>
-                <button class="btn btn-dark" onclick="closeLogin()">✖</button>
-            </div>
-            <hr class="login-divider">
-            <div class="login-users-online">
-                <span class="online-dot" style="width:5px;height:5px;"></span>
-                <span id="loginOnlineCount">0 online</span>
-            </div>
-            <div id="lobbyUsersContainer" style="display:none; margin-top:12px;">
-                <div style="color:#1a1a1a; font-size:10px; letter-spacing:2px; margin-bottom:6px;">USERS IN LOBBY</div>
-                <div id="lobbyUsers" class="lobby-users"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APP -->
-    <div id="app">
-        <!-- NAV -->
-        <div class="nav">
-            <div class="nav-brand">
-                <span id="brandLabel">MONGLE_OS</span>
-                <span id="badge" style="font-size:9px; color:var(--primary); margin-left:6px;"></span>
-            </div>
-            <div class="search-area">
-                <select id="cat" class="input" style="width:140px; margin:0;" onchange="renderGrid()">
-                    <option value="all">ALL_FILES</option>
-                    <option value="favs">❤️ FAVORITES</option>
-                    <option value="shooting">🔫 SHOOTING</option>
-                    <option value="racing">🏎️ RACING</option>
-                    <option value="survival">⛏️ SURVIVAL</option>
-                    <option value="horror">👻 HORROR</option>
-                    <option value="puzzle">🧩 PUZZLE</option>
-                    <option value="platformer">🦘 PLATFORMER</option>
-                    <option value="io">🌐 .IO GAMES</option>
-                    <option value="sports">⚽ SPORTS</option>
-                    <option value="action">⚔️ ACTION</option>
-                    <option value="strategy">♟️ STRATEGY</option>
-                    <option value="rhythm">🎵 RHYTHM</option>
-                    <option value="simulation">🌆 SIMULATION</option>
-                    <option value="casual">🎲 CASUAL</option>
-                    <option value="five nights at freddys">🐻 FNAF</option>
-                    <option value="other">📁 OTHER</option>
-                </select>
-                <input type="text" id="search" class="input" style="margin:0; max-width:260px;" placeholder="Search games..." oninput="renderGrid(); if(myID){userStats.searchCount=(userStats.searchCount||0)+1; localStorage.setItem('userStats',JSON.stringify(userStats)); checkAchievements();}">
-                <div id="tagFilters">
-                    <span class="tag-pill" data-tag="all" onclick="setTagFilter('all')">ALL</span>
-                    <span class="tag-pill tag-popular" data-tag="popular" onclick="setTagFilter('popular')">🔥 POPULAR</span>
-                    <span class="tag-pill tag-trending" data-tag="trending" onclick="setTagFilter('trending')">📈 TRENDING</span>
-                    <span class="tag-pill tag-multiplayer" data-tag="multiplayer" onclick="setTagFilter('multiplayer')">👥 MULTI</span>
-                    <span class="tag-pill tag-nolag" data-tag="nolag" onclick="setTagFilter('nolag')">⚡ NO-LAG</span>
-                    <span class="tag-pill tag-new" data-tag="new" onclick="setTagFilter('new')">✨ NEW</span>
-                </div>
-            </div>
-            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                <button class="btn btn-dark" onclick="openMongleAboutBlank()">✖️ X</button>
-                <button class="btn btn-dark" onclick="toggleLB()" style="position:relative;">🏆 LB <span id="notifBubble"></span></button>
-                <button class="btn btn-dark" onclick="toggleAch()">🎖️ ACH</button>
-                <button id="adminBtn2" class="btn btn-purple" style="display:none; border-color:var(--purple);" onclick="toggleModal('adminM')">⚡ OVERSEER</button>
-                <button id="mongleAdminBtn2" class="btn" style="display:none; background:linear-gradient(45deg,#ff00ff,#00ffff); color:#000; font-weight:bold;" onclick="toggleModal('adminM'); setTimeout(toggleMonglePanel, 100);">👑 MONGLE</button>
-                <button class="btn btn-dark" onclick="toggleModal('settingsM')">⚙️</button>
                 <button class="btn btn-red" onclick="panicTrigger()">PANIC</button>
             </div>
         </div>
@@ -1864,9 +1203,232 @@
         <iframe id="embeddedFrame" allow="fullscreen; autoplay" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update, push, remove, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <script>
+    // ══════════════════════════════════════════════════════════════════
+    // MONGLE FIREBASE SHIM v2 — works on GitHub Pages / githack / anywhere
+    // Uses Firebase REST API + long-polling. No SDK required.
+    // ══════════════════════════════════════════════════════════════════
+    window.firebase = (function() {
+        'use strict';
+
+        // ── Minimal firebase.app() stub (needed by initializeApp shim below) ──
+        let _config = null;
+        const app = { name: '[DEFAULT]', options: {} };
+
+        // ── Minimal firebase.database() stub ──
+        // Returns a database object whose .ref(path) returns a ref object
+        // matching the API used by the compat shims already in the code.
+
+        function FirebaseDB(config) {
+            this._base = config.databaseURL.replace(/\/$/, '');
+            this._auth  = config.apiKey;
+        }
+
+        FirebaseDB.prototype.ref = function(path) {
+            return new FirebaseRef(this._base, this._auth, path || '/');
+        };
+
+        function encodePath(p) {
+            // firebase paths: must not start with multiple slashes
+            if (!p || p === '/') return '';
+            return p.replace(/^\/+/, '/');
+        }
+
+        function FirebaseRef(base, auth, path) {
+            this._base = base;
+            this._auth = auth;
+            this._path = path || '/';
+            this._listeners = {};
+        }
+
+        FirebaseRef.prototype._url = function(suffix) {
+            const p = this._path.replace(/^\//, '');
+            return this._base + '/' + p + (suffix || '') + '.json?auth=' + this._auth;
+        };
+
+        // ── set ──
+        FirebaseRef.prototype.set = function(value) {
+            return fetch(this._url(), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(value === undefined ? null : value)
+            }).then(r => r.json()).catch(() => null);
+        };
+
+        // ── update ──
+        FirebaseRef.prototype.update = function(value) {
+            return fetch(this._url(), {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(value)
+            }).then(r => r.json()).catch(() => null);
+        };
+
+        // ── remove ──
+        FirebaseRef.prototype.remove = function() {
+            return fetch(this._url(), { method: 'DELETE' }).then(r => r.ok ? null : null).catch(() => null);
+        };
+
+        // ── push ──
+        FirebaseRef.prototype.push = function(value) {
+            if (value !== undefined) {
+                return fetch(this._url(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(value)
+                }).then(r => r.json()).then(d => {
+                    return new FirebaseRef(this._base, this._auth, this._path + '/' + d.name);
+                }).catch(() => new FirebaseRef(this._base, this._auth, this._path + '/err'));
+            } else {
+                // push() with no value returns a ref with a generated key
+                const key = '-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+                return new FirebaseRef(this._base, this._auth, this._path + '/' + key);
+            }
+        };
+
+        // ── once('value') ──
+        FirebaseRef.prototype.once = function(event) {
+            return fetch(this._url()).then(r => r.json()).then(data => {
+                return new DataSnapshot(this._path, data);
+            }).catch(() => new DataSnapshot(this._path, null));
+        };
+
+        // ── on('value', cb) — polls every 2.5 seconds ──
+        FirebaseRef.prototype.on = function(event, callback) {
+            const key = event + ':' + this._path;
+            if (this._listeners[key]) return; // already listening
+
+            const self = this;
+            let lastJson = undefined;
+
+            const poll = function() {
+                fetch(self._url())
+                    .then(r => r.json())
+                    .then(data => {
+                        const json = JSON.stringify(data);
+                        if (json !== lastJson) {
+                            lastJson = json;
+                            callback(new DataSnapshot(self._path, data));
+                        }
+                    })
+                    .catch(() => {});
+            };
+
+            poll(); // immediate first call
+            const interval = setInterval(poll, 2500);
+            this._listeners[key] = interval;
+        };
+
+        // ── off ──
+        FirebaseRef.prototype.off = function() {
+            Object.values(this._listeners).forEach(clearInterval);
+            this._listeners = {};
+        };
+
+        // ── onDisconnect ──
+        FirebaseRef.prototype.onDisconnect = function() {
+            const self = this;
+            return {
+                remove: function() {
+                    // Register a beforeunload handler to DELETE on page close
+                    window.addEventListener('beforeunload', function() {
+                        // Use sendBeacon for reliability
+                        const url = self._url();
+                        try {
+                            navigator.sendBeacon && navigator.sendBeacon(
+                                url.replace('.json?auth=', '.json?_method=DELETE&auth='),
+                                null
+                            );
+                            // Also try sync XHR as fallback
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('DELETE', url, false);
+                            xhr.send();
+                        } catch(e) {}
+                    });
+                }
+            };
+        };
+
+        // ── child / parent ──
+        FirebaseRef.prototype.child = function(path) {
+            return new FirebaseRef(this._base, this._auth, this._path.replace(/\/$/, '') + '/' + path);
+        };
+
+        // ── exists ──
+        FirebaseRef.prototype.exists = function() {
+            return this._data !== null && this._data !== undefined;
+        };
+
+        // ── size ──
+        Object.defineProperty(FirebaseRef.prototype, 'size', {
+            get: function() { return 0; } // placeholder
+        });
+
+        // ── DataSnapshot ──
+        function DataSnapshot(path, data) {
+            this._path = path;
+            this._data = data;
+            this.key = path ? path.split('/').pop() : null;
+            // compute size
+            if (data && typeof data === 'object') {
+                this.size = Object.keys(data).length;
+            } else {
+                this.size = data !== null && data !== undefined ? 1 : 0;
+            }
+        }
+
+        DataSnapshot.prototype.exists = function() {
+            return this._data !== null && this._data !== undefined;
+        };
+
+        DataSnapshot.prototype.val = function() {
+            return this._data;
+        };
+
+        DataSnapshot.prototype.forEach = function(cb) {
+            if (!this._data || typeof this._data !== 'object') return;
+            Object.entries(this._data).forEach(([key, val]) => {
+                cb(new DataSnapshot(this._path + '/' + key, val));
+            });
+        };
+
+        DataSnapshot.prototype.child = function(path) {
+            if (!this._data || typeof this._data !== 'object') return new DataSnapshot(path, null);
+            const parts = path.split('/');
+            let d = this._data;
+            for (const p of parts) { if (d && typeof d === 'object') d = d[p]; else { d = null; break; } }
+            return new DataSnapshot(path, d === undefined ? null : d);
+        };
+
+        // ── Public firebase object ──
+        let _db = null;
+        return {
+            initializeApp: function(config) {
+                _config = config;
+                app.options = config;
+                _db = new FirebaseDB(config);
+                return app;
+            },
+            app: function() { return app; },
+            database: function() { return _db; }
+        };
+    })();
+    </script>
+    <script>
+        // Compat shims so the rest of the code works unchanged
+        function initializeApp(cfg) { firebase.initializeApp(cfg); return firebase.app(); }
+        function getDatabase()      { return firebase.database(); }
+        function ref(db, path)      { return db.ref(path); }
+        function onValue(r, cb, opts) {
+            if (opts && opts.onlyOnce) { r.once('value').then(cb).catch(function(){}); }
+            else { r.on('value', cb); }
+        }
+        function set(r, v)          { return r.set(v); }
+        function update(r, v)       { return r.update(v); }
+        function push(r, v)         { return v !== undefined ? r.push(v) : r.push(); }
+        function remove(r)          { return r.remove(); }
+        function get(r)             { return r.once('value'); }
+        function onDisconnect(r)    { return r.onDisconnect(); }
 
         // Runtime decoder — strings are XOR+base64, never plain text in source
         const _d = s => atob(s).split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ 42)).join('');
@@ -1906,27 +1468,57 @@
             return id;
         }
         const COMPUTER_ID = getComputerId();
-        tempKey = localStorage.getItem('pKey') || 'Escape';
+
+        // ── PER-COMPUTER STORAGE ──
+        // All user data (favs, settings, XP, achievements) is namespaced
+        // under this computer's ID so multiple users on different computers
+        // never share or overwrite each other's data.
+        function LS(key) {
+            var v = localStorage.getItem(COMPUTER_ID + ':' + key);
+            // Fall back to old un-namespaced key on first run so existing users keep their data
+            if (v === null) v = localStorage.getItem(key);
+            return v;
+        }
+        function LS_SET(key, val) {
+            localStorage.setItem(COMPUTER_ID + ':' + key, val);
+            // Remove any old un-namespaced key so it doesn't shadow
+            localStorage.removeItem(key);
+        }
+        function LS_REMOVE(key) {
+            localStorage.removeItem(COMPUTER_ID + ':' + key);
+            localStorage.removeItem(key);
+        }
+
+        // Pre-fill username from this computer's saved name
+        (function() {
+            var saved = LS('savedUsername');
+            if (saved) {
+                var inputs = document.querySelectorAll('#username');
+                inputs.forEach(function(el) { el.value = saved; });
+            }
+        })();
+
+        tempKey = LS('pKey') || 'Escape';
 
         let cfg = {
-            url: localStorage.getItem('pUrl') || 'https://google.com',
+            url: LS('pUrl') || 'https://google.com',
             key: tempKey,
-            mode: localStorage.getItem('pMode') || 'embed',
-            enable: localStorage.getItem('pEnable') !== 'false',
-            theme: localStorage.getItem('pTheme') || 'mongle',
-            cloak: localStorage.getItem('pCloak') || 'none',
-            panicMode: localStorage.getItem('pPanicMode') || 'redirect',
-            panicImage: localStorage.getItem('pPanicImage') || '',
-            proxyUrl: localStorage.getItem('pProxyUrl') || '',
-            proxyMode: localStorage.getItem('pProxyMode') || 'off'
+            mode: LS('pMode') || 'newtab',
+            enable: LS('pEnable') !== 'false',
+            theme: LS('pTheme') || 'mongle',
+            cloak: LS('pCloak') || 'none',
+            panicMode: LS('pPanicMode') || 'redirect',
+            panicImage: LS('pPanicImage') || '',
+            proxyUrl: LS('pProxyUrl') || '',
+            proxyMode: LS('pProxyMode') || 'off'
         };
 
-        let favs = JSON.parse(localStorage.getItem('favs') || '[]');
+        let favs = JSON.parse(LS('favs') || '[]');
         let activeTagFilter = 'all';
-        let gameTags = JSON.parse(localStorage.getItem('gameTags') || '{}');
-        let playStats = JSON.parse(localStorage.getItem('playStats') || '{}');
-        let userPlayCount = JSON.parse(localStorage.getItem('userPlayCount') || '{}');
-        let achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+        let gameTags = JSON.parse(LS('gameTags') || '{}');
+        let playStats = JSON.parse(LS('playStats') || '{}');
+        let userPlayCount = JSON.parse(LS('userPlayCount') || '{}');
+        let achievements = JSON.parse(LS('achievements') || '[]');
         let unreadChat = 0;
 
         // ================================
@@ -2147,13 +1739,13 @@
             { id: 'blessed',         name: '✨ Blessed',              desc: 'Received divine favor',                    req: () => false,                   cat: 'secret' },
         ];
 
-        let userStats = JSON.parse(localStorage.getItem('userStats') || '{}');
+        let userStats = JSON.parse(LS('userStats') || '{}');
         // Ensure all fields exist
         const _usd = {totalPlays:0,favCount:0,chatCount:0,speedRuns:0,nightPlays:0,earlyPlays:0,uniqueGames:0,uniqueGamesList:[],sessions:0,backToBack:0,sessionGames:0,sessionGamesList:[],lunchPlays:0,weekendPlays:0,searchCount:0,prankCount:0};
         Object.keys(_usd).forEach(k => { if (userStats[k] === undefined) userStats[k] = _usd[k]; });
         userStats.sessions++;
         userStats.sessionGames = 0; userStats.sessionGamesList = []; // reset per-session
-        localStorage.setItem('userStats', JSON.stringify(userStats));
+        LS_SET('userStats', JSON.stringify(userStats));
         let lastPlayTime = 0, rapidPlayCount = 0, lastGameId = null;
 
         function checkAchievements() {
@@ -2164,7 +1756,7 @@
                     newUnlocks.push(ach);
                 }
             });
-            localStorage.setItem('achievements', JSON.stringify(achievements));
+            LS_SET('achievements', JSON.stringify(achievements));
             if (newUnlocks.length > 0) {
                 let delay = 0;
                 newUnlocks.forEach(ach => {
@@ -2343,7 +1935,7 @@
             input.value = '';
             clearReply();
             userStats.chatCount = (userStats.chatCount || 0) + 1;
-            localStorage.setItem('userStats', JSON.stringify(userStats));
+            LS_SET('userStats', JSON.stringify(userStats));
             checkAchievements();
         };
 
@@ -2464,10 +2056,10 @@
         // GAME TAGS
         // ================================
         // Custom tag definitions: { id, emoji, name, color }
-        let customTagDefs = JSON.parse(localStorage.getItem('customTagDefs') || '[]');
+        let customTagDefs = JSON.parse(LS('customTagDefs') || '[]');
 
         function syncCustomTagDefs() {
-            localStorage.setItem('customTagDefs', JSON.stringify(customTagDefs));
+            LS_SET('customTagDefs', JSON.stringify(customTagDefs));
             set(ref(db, 'customTagDefs'), customTagDefs.length > 0 ? customTagDefs : null);
         }
 
@@ -2475,7 +2067,7 @@
             onValue(ref(db, 'customTagDefs'), snap => {
                 if (snap.exists()) {
                     customTagDefs = snap.val() || [];
-                    localStorage.setItem('customTagDefs', JSON.stringify(customTagDefs));
+                    LS_SET('customTagDefs', JSON.stringify(customTagDefs));
                 }
                 renderCustomTagPills();
                 renderCustomTagList();
@@ -2608,7 +2200,7 @@
             // Add checked custom tags
             document.querySelectorAll('[data-ctag]:checked').forEach(cb => tags.push(cb.dataset.ctag));
             gameTags[gameId] = tags;
-            localStorage.setItem('gameTags', JSON.stringify(gameTags));
+            LS_SET('gameTags', JSON.stringify(gameTags));
             set(ref(db, `gameTags/${gameId}`), tags.length > 0 ? tags : null);
             showToast('Tags saved!');
             renderGrid();
@@ -2622,7 +2214,7 @@
                     if (c.val()) gameTags[c.key] = c.val();
                     else delete gameTags[c.key];
                 });
-                localStorage.setItem('gameTags', JSON.stringify(gameTags));
+                LS_SET('gameTags', JSON.stringify(gameTags));
                 renderGrid();
             });
         }
@@ -2655,7 +2247,7 @@
             const ach = ACH_DEFS.find(a => a.id === id);
             if (!ach) return;
             achievements.push(id);
-            localStorage.setItem('achievements', JSON.stringify(achievements));
+            LS_SET('achievements', JSON.stringify(achievements));
             setTimeout(() => { showAchPopup(ach); renderAchievements(); if(myID) update(ref(db,`presence/${myID}`), {achievements: achievements.length}); }, 1500);
         }
 
@@ -2804,7 +2396,7 @@
                     'platformer': ['nolag'],
                     'casual': ['nolag'],
                 };
-                const savedTags = JSON.parse(localStorage.getItem('gameTags') || '{}');
+                const savedTags = JSON.parse(LS('gameTags') || '{}');
                 let tagsChanged = false;
                 fetchedGames.forEach(g => {
                     const autoTags = autoTagMap[g.category] || [];
@@ -2814,7 +2406,7 @@
                     }
                 });
                 if (tagsChanged) {
-                    localStorage.setItem('gameTags', JSON.stringify(savedTags));
+                    LS_SET('gameTags', JSON.stringify(savedTags));
                     gameTags = savedTags;
                     // Sync to Firebase if admin
                     if (isMongle || isAdmin) set(ref(db, 'gameTags'), savedTags);
@@ -2826,9 +2418,93 @@
                 const breakdown = {};
                 fetchedGames.forEach(g => { breakdown[g.category] = (breakdown[g.category]||0)+1; });
                 console.log("Categories:", breakdown);
-            } catch (e) { console.error("Sync error:", e); }
+                // Update dev status bar on successful sync
+                var _ghDot = document.getElementById('devGhDot');
+                var _ghSt  = document.getElementById('devGhStatus');
+                var _ghCt  = document.getElementById('devGhCount');
+                var _sync  = document.getElementById('devLastSync');
+                if (_ghDot) _ghDot.style.background = '#00ff41';
+                if (_ghSt)  _ghSt.textContent  = 'OK';
+                if (_ghCt)  _ghCt.textContent  = fetchedGames.length + ' games';
+                if (_sync)  _sync.textContent  = 'Last sync: ' + new Date().toLocaleTimeString();
+            } catch (e) {
+                console.error("Sync error:", e);
+                var _ghDot2 = document.getElementById('devGhDot');
+                var _ghSt2  = document.getElementById('devGhStatus');
+                if (_ghDot2) _ghDot2.style.background = '#ff4757';
+                if (_ghSt2)  _ghSt2.textContent = 'error';
+            }
         }
         loadGithubGames();
+
+        // ================================
+        // DEV STATUS CHECK (MONGLE only)
+        // ================================
+        window.runDevCheck = function() {
+            if (!isMongle) return;
+            var fbDot = document.getElementById('devFbDot');
+            var fbSt  = document.getElementById('devFbStatus');
+            var ghDot = document.getElementById('devGhDot');
+            var ghSt  = document.getElementById('devGhStatus');
+            var ghCt  = document.getElementById('devGhCount');
+            var rateDot = document.getElementById('devRateDot');
+            var rateEl  = document.getElementById('devGhRate');
+            var syncEl  = document.getElementById('devLastSync');
+
+            // Firebase check
+            if (fbDot) fbDot.style.background = '#ffae00';
+            if (fbSt)  fbSt.textContent = 'checking...';
+            try {
+                var testRef = ref(db, '.info/connected');
+                onValue(testRef, function(snap) {
+                    if (snap.val() === true) {
+                        if (fbDot) fbDot.style.background = '#00ff41';
+                        if (fbSt)  fbSt.textContent = 'connected';
+                    } else {
+                        if (fbDot) fbDot.style.background = '#ff4757';
+                        if (fbSt)  fbSt.textContent = 'offline';
+                    }
+                }, { onlyOnce: true });
+            } catch(e) {
+                if (fbDot) fbDot.style.background = '#ff4757';
+                if (fbSt)  fbSt.textContent = 'error';
+            }
+
+            // GitHub check
+            if (ghDot) ghDot.style.background = '#ffae00';
+            if (ghSt)  ghSt.textContent = 'fetching...';
+            if (ghCt)  ghCt.textContent = '';
+            fetch('https://api.github.com/repos/Idonotknowhowtocodeyet/mongles-pull-games/contents/')
+                .then(function(res) {
+                    var remain = res.headers.get('x-ratelimit-remaining');
+                    var limit  = res.headers.get('x-ratelimit-limit');
+                    var reset  = res.headers.get('x-ratelimit-reset');
+                    if (remain !== null) {
+                        var r = parseInt(remain);
+                        var resetStr = reset ? ' resets ' + new Date(parseInt(reset)*1000).toLocaleTimeString() : '';
+                        if (rateEl)  rateEl.textContent  = r + '/' + limit + resetStr;
+                        if (rateDot) rateDot.style.background = r > 20 ? '#00ff41' : r > 5 ? '#ffae00' : '#ff4757';
+                    }
+                    if (!res.ok) {
+                        if (ghDot) ghDot.style.background = '#ff4757';
+                        if (ghSt)  ghSt.textContent = 'HTTP ' + res.status;
+                        return null;
+                    }
+                    return res.json();
+                })
+                .then(function(files) {
+                    if (!files) return;
+                    var count = files.filter(function(f) { return f.name.endsWith('.html'); }).length;
+                    if (ghDot) ghDot.style.background = '#00ff41';
+                    if (ghSt)  ghSt.textContent = 'OK';
+                    if (ghCt)  ghCt.textContent = count + ' games';
+                    if (syncEl) syncEl.textContent = 'Last sync: ' + new Date().toLocaleTimeString();
+                })
+                .catch(function(e) {
+                    if (ghDot) ghDot.style.background = '#ff4757';
+                    if (ghSt)  ghSt.textContent = 'fetch error';
+                });
+        };
 
         // ================================
         // BAN CHECK
@@ -2847,10 +2523,10 @@
         checkBan();
 
         function trackIdName(id, name) {
-            const idLog = JSON.parse(localStorage.getItem('idLog') || '{}');
+            const idLog = JSON.parse(LS('idLog') || '{}');
             if (!idLog[id]) idLog[id] = [];
             if (!idLog[id].includes(name)) idLog[id].push(name);
-            localStorage.setItem('idLog', JSON.stringify(idLog));
+            LS_SET('idLog', JSON.stringify(idLog));
             if (isMongle) set(ref(db, `idLog/${id}`), { names: idLog[id], lastSeen: new Date().toISOString() });
         }
 
@@ -3035,7 +2711,8 @@
         // INIT SESSION
         // ================================
         window.initSession = async () => {
-            myName = document.getElementById('username').value.trim() || "User_" + Math.floor(Math.random()*9999);
+            myName = document.getElementById('username').value.trim() || LS('savedUsername') || "User_" + Math.floor(Math.random()*9999);
+            LS_SET('savedUsername', myName);
             trackIdName(COMPUTER_ID, myName);
             document.getElementById('lockdown').style.display = "none";
             document.getElementById('loginOverlay').style.display = "none";
@@ -3148,15 +2825,47 @@
                     executePrankEffect(d.prank); 
                     update(userRef, {prank: null}); 
                     userStats.prankCount = (userStats.prankCount||0) + 1;
-                    localStorage.setItem('userStats', JSON.stringify(userStats));
+                    LS_SET('userStats', JSON.stringify(userStats));
                     awardSecretAch('pranked');
                     if (userStats.prankCount >= 5) awardSecretAch('pranked_5');
                 }
                 if (d.forceTheme) { applyTheme(d.forceTheme); update(userRef, {forceTheme: null}); }
+                // Incoming cast from MONGLE
+                if (d.castActive && d.incomingCast) {
+                    var castWin = document.getElementById('incomingCastWin');
+                    if (!castWin) {
+                        castWin = document.createElement('div');
+                        castWin.id = 'incomingCastWin';
+                        castWin.style.cssText = 'position:fixed;bottom:60px;right:16px;width:360px;background:rgba(3,3,3,0.95);border:1px solid rgba(0,207,255,0.4);border-radius:8px;z-index:4500000;box-shadow:0 8px 40px rgba(0,207,255,0.15);overflow:hidden;font-family:monospace;';
+                        var bar = document.createElement('div');
+                        bar.id = 'incomingCastBar';
+                        bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#050505;border-bottom:1px solid #111;font-size:10px;color:#00cfff;cursor:move;';
+                        bar.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00cfff;margin-right:6px;animation:pulse 1s infinite;"></span>CAST FROM <span id="incomingCastFrom" style="font-weight:bold;margin-left:4px;"></span>';
+                        var closeBtn = document.createElement('button');
+                        closeBtn.textContent = 'x';
+                        closeBtn.style.cssText = 'background:none;border:none;color:#555;cursor:pointer;font-size:14px;line-height:1;';
+                        closeBtn.onclick = function() { document.getElementById('incomingCastWin').remove(); };
+                        bar.appendChild(closeBtn);
+                        var img = document.createElement('img');
+                        img.id = 'incomingCastImg';
+                        img.style.cssText = 'width:100%;display:block;max-height:220px;object-fit:contain;background:#000;';
+                        castWin.appendChild(bar);
+                        castWin.appendChild(img);
+                        document.body.appendChild(castWin);
+                        makeDraggable(castWin, bar);
+                    }
+                    var castImg  = document.getElementById('incomingCastImg');
+                    var fromEl   = document.getElementById('incomingCastFrom');
+                    if (castImg) castImg.src = d.incomingCast;
+                    if (fromEl)  fromEl.textContent = d.castFrom || 'MONGLE';
+                } else if (d.castActive === false) {
+                    var oldWin = document.getElementById('incomingCastWin');
+                    if (oldWin) { oldWin.remove(); }
+                }
                 if (d.grantAch) {
                     if (!achievements.includes(d.grantAch)) {
                         achievements.push(d.grantAch);
-                        localStorage.setItem('achievements', JSON.stringify(achievements));
+                        LS_SET('achievements', JSON.stringify(achievements));
                         const achDef = ACH_DEFS.find(a => a.id === d.grantAch);
                         showAchPopup(achDef || {name: d.grantAch, desc: 'Awarded by MONGLE'});
                         update(userRef, {achievements: achievements.length, grantAch: null});
@@ -3165,7 +2874,7 @@
                 if (d.awardAch) {
                     if (!achievements.includes(d.awardAch)) {
                         achievements.push(d.awardAch);
-                        localStorage.setItem('achievements', JSON.stringify(achievements));
+                        LS_SET('achievements', JSON.stringify(achievements));
                         const achDef = ACH_DEFS.find(a => a.id === d.awardAch);
                         showAchPopup(achDef || {name: d.awardAch, desc: 'Awarded by MONGLE'});
                         update(userRef, {achievements: achievements.length, awardAch: null});
@@ -3266,11 +2975,9 @@
                 startOverseer(); 
                 startGameTabMonitor();
                 document.getElementById('adminBtn').style.display = 'inline-block';
-                if (document.getElementById('adminBtn2')) document.getElementById('adminBtn2').style.display = 'inline-block';
             }
             if (isMongle) {
                 document.getElementById('mongleAdminBtn').style.display = 'inline-block';
-                if (document.getElementById('mongleAdminBtn2')) document.getElementById('mongleAdminBtn2').style.display = 'inline-block';
             }
             document.getElementById('adminUpdateControls').style.display = isAdmin ? 'block' : 'none';
             fetchUpdates();
@@ -3311,7 +3018,7 @@
                 return;
             }
 
-            const seenGames = JSON.parse(localStorage.getItem('seenGames') || '{}');
+            const seenGames = JSON.parse(LS('seenGames') || '{}');
             const nowTs = Date.now();
             const oneWeek = 7 * 24 * 60 * 60 * 1000;
             // First time seeing any games? Mark them all as old so nothing shows NEW
@@ -3340,7 +3047,7 @@
                     ${plays > 0 ? `<div class="card-plays">${plays} plays</div>` : ''}
                 </div>`;
             }).join('');
-            if (seenChanged) localStorage.setItem('seenGames', JSON.stringify(seenGames));
+            if (seenChanged) LS_SET('seenGames', JSON.stringify(seenGames));
         };
 
         window.playGame = (url, gameId) => {
@@ -3350,7 +3057,7 @@
             // Track play stats
             if (gameId) {
                 playStats[gameId] = (playStats[gameId] || 0) + 1;
-                localStorage.setItem('playStats', JSON.stringify(playStats));
+                LS_SET('playStats', JSON.stringify(playStats));
                 userStats.totalPlays = (userStats.totalPlays || 0) + 1;
                 if (!userStats.uniqueGamesList) userStats.uniqueGamesList = [];
                 if (!userStats.uniqueGamesList.includes(gameId)) userStats.uniqueGamesList.push(gameId);
@@ -3374,7 +3081,7 @@
                 // Session games
                 if (!userStats.sessionGamesList) userStats.sessionGamesList = [];
                 if (!userStats.sessionGamesList.includes(gameId)) { userStats.sessionGamesList.push(gameId); userStats.sessionGames = userStats.sessionGamesList.length; }
-                localStorage.setItem('userStats', JSON.stringify(userStats));
+                LS_SET('userStats', JSON.stringify(userStats));
                 checkAchievements();
                 // Push play to firebase for global leaderboard
                 if (myID) update(ref(db, `gameStats/${gameId}`), { plays: playStats[gameId], name: (gameData.find(g=>g.id===gameId)?.name||'?') });
@@ -3482,8 +3189,8 @@
 
         window.toggleFav = (id) => {
             if (favs.includes(id)) favs = favs.filter(f=>f!==id);
-            else { favs.push(id); userStats.favCount = (userStats.favCount||0)+1; localStorage.setItem('userStats', JSON.stringify(userStats)); checkAchievements(); }
-            localStorage.setItem('favs', JSON.stringify(favs));
+            else { favs.push(id); userStats.favCount = (userStats.favCount||0)+1; LS_SET('userStats', JSON.stringify(userStats)); checkAchievements(); }
+            LS_SET('favs', JSON.stringify(favs));
             renderGrid();
         };
 
@@ -3539,7 +3246,7 @@
             if (!cfg.enable) return;
             awardSecretAch('panic_pressed');
             userStats.panicCount = (userStats.panicCount||0) + 1;
-            localStorage.setItem('userStats', JSON.stringify(userStats));
+            LS_SET('userStats', JSON.stringify(userStats));
             if (userStats.panicCount >= 3) awardSecretAch('panic_3');
             closeGame();
             if (cfg.panicMode === 'image' && cfg.panicImage) {
@@ -3575,7 +3282,7 @@
             const reader = new FileReader();
             reader.onload = (ev) => {
                 cfg.panicImage = ev.target.result;
-                localStorage.setItem('pPanicImage', cfg.panicImage);
+                LS_SET('pPanicImage', cfg.panicImage);
                 document.getElementById('panicImagePreview').innerHTML = `<img src="${cfg.panicImage}" style="max-width:100%; max-height:80px; border-radius:4px;">`;
                 showToast('Panic image saved!');
             };
@@ -3888,7 +3595,7 @@
         function updateDossier(u, key) {
             const safe = u || {};
             const status = safe.frozen ? '❄️ FROZEN' : (safe.bsod ? '☠️ BSOD' : (safe.kicked ? '🚫 KICKED' : (safe.activeGame ? '🎮 GAMING' : '🟢 ACTIVE')));
-            const idLog = JSON.parse(localStorage.getItem('idLog') || '{}');
+            const idLog = JSON.parse(LS('idLog') || '{}');
             const prevNames = idLog[safe.computerId] || [];
             const elapsed = safe.gameStarted ? Math.floor((Date.now() - safe.gameStarted) / 60000) : 0;
             document.getElementById('dossier').innerHTML = `
@@ -4020,7 +3727,26 @@
         window.toggleMonglePanel = () => {
             const p = document.getElementById('monglePanel');
             p.style.display = p.style.display === 'none' ? 'block' : 'none';
-            if (p.style.display === 'block') { populateTagSelect(); updateMongleStats(); populateNoteUserSelect(); renderNotesList(); }
+            if (p.style.display === 'block') {
+                populateTagSelect(); updateMongleStats(); populateNoteUserSelect(); renderNotesList();
+                // Populate cast target dropdown
+                var sel = document.getElementById('castTargetSelect');
+                if (sel) {
+                    var cur = sel.value;
+                    sel.innerHTML = '<option value="">— Select user —</option>';
+                    Object.entries(presenceSnapshot || {}).forEach(function(entry) {
+                        var id = entry[0]; var u = entry[1];
+                        if (id === myID) return;
+                        var opt = document.createElement('option');
+                        opt.value = id;
+                        opt.textContent = (u.name || 'Unknown') + ' — ' + (u.computerId || id).slice(0,8);
+                        sel.appendChild(opt);
+                    });
+                    if (cur) sel.value = cur;
+                }
+                // Auto-run dev status check
+                if (typeof window.runDevCheck === 'function') window.runDevCheck();
+            }
         };
 
         // ── MASS AWARD ──
@@ -4036,8 +3762,8 @@
         };
 
         // ── USER NOTES ──
-        function getUserNotes() { return JSON.parse(localStorage.getItem('mongleUserNotes') || '{}'); }
-        function saveNotes(notes) { localStorage.setItem('mongleUserNotes', JSON.stringify(notes)); }
+        function getUserNotes() { return JSON.parse(LS('mongleUserNotes') || '{}'); }
+        function saveNotes(notes) { LS_SET('mongleUserNotes', JSON.stringify(notes)); }
 
         function populateNoteUserSelect() {
             const sel = document.getElementById('noteUserSel'); if (!sel) return;
@@ -4176,7 +3902,7 @@
 
         window.exportAllData = () => {
             if (!isMongle) return;
-            const data = { timestamp: new Date().toISOString(), presence: presenceSnapshot, idLog: JSON.parse(localStorage.getItem('idLog')||'{}'), playStats, gameTags };
+            const data = { timestamp: new Date().toISOString(), presence: presenceSnapshot, idLog: JSON.parse(LS('idLog')||'{}'), playStats, gameTags };
             const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `mongle-export-${Date.now()}.json`; a.click();
         };
@@ -4233,10 +3959,10 @@
 
         window.refreshAnalytics = () => {
             const users = Object.keys(presenceSnapshot).length;
-            document.getElementById('peakUsers').innerText = Math.max(users, parseInt(localStorage.getItem('peakUsers')||'0'));
-            localStorage.setItem('peakUsers', Math.max(users, parseInt(localStorage.getItem('peakUsers')||'0')));
-            document.getElementById('totalSessions').innerText = localStorage.getItem('totalSessions') || '0';
-            document.getElementById('avgSessionTime').innerText = (parseInt(localStorage.getItem('avgSession')||'0')) + 'm';
+            document.getElementById('peakUsers').innerText = Math.max(users, parseInt(LS('peakUsers')||'0'));
+            LS_SET('peakUsers', Math.max(users, parseInt(LS('peakUsers')||'0')));
+            document.getElementById('totalSessions').innerText = LS('totalSessions') || '0';
+            document.getElementById('avgSessionTime').innerText = (parseInt(LS('avgSession')||'0')) + 'm';
             document.getElementById('gamesThisHour').innerText = Object.values(playStats).reduce((a,b)=>a+b,0);
             showToast('Analytics refreshed!');
         };
@@ -4717,12 +4443,12 @@
             cfg.panicMode = document.getElementById('panicMode').value;
             cfg.proxyUrl = (document.getElementById('cfgProxyUrl')?.value || '').trim();
             cfg.proxyMode = document.getElementById('cfgProxyMode')?.value || 'off';
-            localStorage.setItem('pUrl', cfg.url); localStorage.setItem('pKey', cfg.key);
-            localStorage.setItem('pMode', cfg.mode); localStorage.setItem('pEnable', cfg.enable);
-            localStorage.setItem('pTheme', cfg.theme); localStorage.setItem('pCloak', cfg.cloak);
-            localStorage.setItem('pPanicMode', cfg.panicMode);
-            localStorage.setItem('pProxyUrl', cfg.proxyUrl);
-            localStorage.setItem('pProxyMode', cfg.proxyMode);
+            LS_SET('pUrl', cfg.url); LS_SET('pKey', cfg.key);
+            LS_SET('pMode', cfg.mode); LS_SET('pEnable', cfg.enable);
+            LS_SET('pTheme', cfg.theme); LS_SET('pCloak', cfg.cloak);
+            LS_SET('pPanicMode', cfg.panicMode);
+            LS_SET('pProxyUrl', cfg.proxyUrl);
+            LS_SET('pProxyMode', cfg.proxyMode);
             applyTheme(cfg.theme); applyCloak(cfg.cloak);
             awardSecretAch('theme_changer');
             const proxyStatus = cfg.proxyMode !== 'off' && cfg.proxyUrl ? ' · Proxy ON 🔒' : '';
@@ -4896,61 +4622,37 @@
             const startMatrix = () => {
                 const canvas = document.getElementById('matrixCanvas');
                 if (!canvas) { setTimeout(startMatrix, 100); return; }
-
                 const ctx = canvas.getContext('2d');
                 if (!ctx) { setTimeout(startMatrix, 100); return; }
 
-                // FIX: getBoundingClientRect is reliable even in rawgithack/cross-origin iframes
-                // where window.innerWidth/innerHeight can return 0 before layout is complete
                 function getSize() {
-                    const rect = canvas.parentElement ? canvas.parentElement.getBoundingClientRect() : null;
-                    const w = (rect && rect.width > 0) ? rect.width
-                              : window.innerWidth || document.documentElement.clientWidth || screen.width || 800;
-                    const h = (rect && rect.height > 0) ? rect.height
-                              : window.innerHeight || document.documentElement.clientHeight || screen.height || 600;
-                    return { w, h };
+                    var rect = canvas.parentElement ? canvas.parentElement.getBoundingClientRect() : null;
+                    var w = (rect && rect.width > 0) ? rect.width : (window.innerWidth || document.documentElement.clientWidth || screen.width || 800);
+                    var h = (rect && rect.height > 0) ? rect.height : (window.innerHeight || document.documentElement.clientHeight || screen.height || 600);
+                    return { w: w, h: h };
                 }
+
+                var chars = 'MONGLE01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+                var fontSize = 13;
+                var cols = 1;
+                var drops = [1];
+                var rainInterval = null;
 
                 function resize() {
-                    const { w, h } = getSize();
-                    canvas.width = w;
-                    canvas.height = h;
-                    // Recalculate columns after resize
+                    var s = getSize();
+                    canvas.width = s.w;
+                    canvas.height = s.h;
                     cols = Math.floor(canvas.width / fontSize);
-                    if (drops.length < cols) {
-                        drops = drops.concat(Array(cols - drops.length).fill(1));
-                    } else {
-                        drops = drops.slice(0, cols);
-                    }
+                    if (drops.length < cols) drops = drops.concat(Array(cols - drops.length).fill(1));
+                    else drops = drops.slice(0, cols);
                 }
-
-                const chars = 'MONGLE01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
-                const fontSize = 13;
-                let cols = 1;
-                let drops = [1];
-
-                // FIX: If dimensions are still 0 (not laid out yet), wait a frame before sizing
-                function initSize() {
-                    const { w, h } = getSize();
-                    if (w === 0 || h === 0) {
-                        requestAnimationFrame(initSize);
-                        return;
-                    }
-                    canvas.width = w;
-                    canvas.height = h;
-                    cols = Math.floor(canvas.width / fontSize);
-                    drops = Array(cols).fill(1);
-                    beginRain();
-                }
-
-                window.addEventListener('resize', resize);
 
                 function draw() {
                     ctx.fillStyle = 'rgba(0,0,0,0.05)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.font = fontSize + 'px monospace';
-                    for (let i = 0; i < cols; i++) {
-                        const c = chars[Math.floor(Math.random() * chars.length)];
+                    for (var i = 0; i < cols; i++) {
+                        var c = chars[Math.floor(Math.random() * chars.length)];
                         ctx.fillStyle = Math.random() > 0.95 ? '#fff' : '#00ff41';
                         ctx.globalAlpha = Math.random() * 0.5 + 0.5;
                         ctx.fillText(c, i * fontSize, drops[i] * fontSize);
@@ -4961,20 +4663,29 @@
                 }
 
                 function beginRain() {
-                    const rainInterval = setInterval(draw, 40);
-                    // Stop rain when lockdown hides
-                    const obs = new MutationObserver(() => {
-                        const ld = document.getElementById('lockdown');
+                    rainInterval = setInterval(draw, 40);
+                    var obs = new MutationObserver(function() {
+                        var ld = document.getElementById('lockdown');
                         if (ld && ld.style.display === 'none') { clearInterval(rainInterval); obs.disconnect(); }
                     });
-                    const ld = document.getElementById('lockdown');
+                    var ld = document.getElementById('lockdown');
                     if (ld) obs.observe(ld, { attributes: true, attributeFilter: ['style'] });
+                }
+
+                function initSize() {
+                    var s = getSize();
+                    if (s.w === 0 || s.h === 0) { requestAnimationFrame(initSize); return; }
+                    canvas.width = s.w;
+                    canvas.height = s.h;
+                    cols = Math.floor(canvas.width / fontSize);
+                    drops = Array(cols).fill(1);
+                    window.addEventListener('resize', resize);
+                    beginRain();
                 }
 
                 initSize();
             };
 
-            // Start when DOM is ready
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', startMatrix);
             } else {
@@ -4994,8 +4705,8 @@
         // ════════════════════════════════════════════════════════
 
         // ── XP / LEVELING ──
-        let xp = parseInt(localStorage.getItem('m_xp') || '0');
-        let xpLevel = parseInt(localStorage.getItem('m_level') || '1');
+        let xp = parseInt(LS('m_xp') || '0');
+        let xpLevel = parseInt(LS('m_level') || '1');
         const XP_PER_LEVEL = 100;
         const ELITE_LEVEL = 10;
         let xpActivityTimer = null;
@@ -5005,17 +4716,17 @@
             const newLevel = Math.floor(xp / XP_PER_LEVEL) + 1;
             if (newLevel > xpLevel) {
                 xpLevel = newLevel;
-                localStorage.setItem('m_level', xpLevel);
+                LS_SET('m_level', xpLevel);
                 showToast('Level Up! You are now Level ' + xpLevel);
                 if (xpLevel >= ELITE_LEVEL) unlockEliteTheme();
             }
-            localStorage.setItem('m_xp', xp);
+            LS_SET('m_xp', xp);
             renderXPBar();
         }
 
         function unlockEliteTheme() {
             document.body.classList.add('elite-theme');
-            localStorage.setItem('m_elite', '1');
+            LS_SET('m_elite', '1');
             showToast('ELITE theme unlocked at Level 10!');
         }
 
@@ -5057,7 +4768,7 @@
             xpActivityTimer = setInterval(function() { gainXP(10); }, 5 * 60 * 1000);
         }
 
-        if (localStorage.getItem('m_elite') === '1') document.body.classList.add('elite-theme');
+        if (LS('m_elite') === '1') document.body.classList.add('elite-theme');
 
         // ── FIREBASE HEARTBEAT ──
         function startHeartbeat() {
@@ -5177,6 +4888,74 @@
             if (panicBtn) navRight.insertBefore(btn, panicBtn);
             else navRight.appendChild(btn);
         }
+
+        // ── CAST TO SPECIFIC USER ──
+        var castToUserActive = false;
+        var castToUserInterval = null;
+        var castToUserStream = null;
+        var castToUserTargetID = null;
+
+        window.startCastToUser = function() {
+            if (!isMongle) return;
+            var sel = document.getElementById('castTargetSelect');
+            if (!sel || !sel.value) { showToast('Select a user to cast to first'); return; }
+            castToUserTargetID = sel.value;
+            var targetName = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : castToUserTargetID;
+            if (castToUserActive) { window.stopCastToUser(); }
+            navigator.mediaDevices.getDisplayMedia({
+                video: { frameRate: { ideal: 10, max: 10 }, width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            }).then(function(stream) {
+                castToUserStream = stream;
+                castToUserActive = true;
+                var btn = document.getElementById('castToUserBtn');
+                var statusEl = document.getElementById('castToUserStatus');
+                if (btn) { btn.style.background = 'rgba(0,207,255,0.25)'; btn.textContent = 'LIVE'; }
+                if (statusEl) statusEl.textContent = 'casting to ' + targetName;
+                update(ref(db, 'presence/' + castToUserTargetID), { castActive: true, castFrom: myName || 'MONGLE' });
+                var vid = document.createElement('video');
+                vid.srcObject = stream;
+                vid.play();
+                vid.onloadedmetadata = function() {
+                    castToUserInterval = setInterval(function() {
+                        if (!castToUserStream || !castToUserStream.active) { window.stopCastToUser(); return; }
+                        try {
+                            var c = document.createElement('canvas');
+                            c.width  = Math.min(vid.videoWidth  || 320, 400);
+                            c.height = Math.min(vid.videoHeight || 200, 250);
+                            c.getContext('2d').drawImage(vid, 0, 0, c.width, c.height);
+                            var img = c.toDataURL('image/jpeg', 0.3);
+                            if (img.length < 900000 && castToUserTargetID) {
+                                update(ref(db, 'presence/' + castToUserTargetID), {
+                                    incomingCast: img,
+                                    castFrom: myName || 'MONGLE',
+                                    castActive: true
+                                });
+                            }
+                        } catch(e2) {}
+                    }, 200);
+                };
+                stream.getVideoTracks()[0].addEventListener('ended', window.stopCastToUser);
+                showToast('Casting to ' + targetName);
+            }).catch(function() {
+                showToast('Screen share cancelled or denied');
+            });
+        };
+
+        window.stopCastToUser = function() {
+            if (castToUserStream) { castToUserStream.getTracks().forEach(function(t) { t.stop(); }); castToUserStream = null; }
+            if (castToUserInterval) { clearInterval(castToUserInterval); castToUserInterval = null; }
+            if (castToUserTargetID) {
+                try { update(ref(db, 'presence/' + castToUserTargetID), { castActive: false, incomingCast: null, castFrom: null }); } catch(e) {}
+            }
+            castToUserActive = false;
+            castToUserTargetID = null;
+            var btn = document.getElementById('castToUserBtn');
+            var statusEl = document.getElementById('castToUserStatus');
+            if (btn) { btn.style.background = 'rgba(0,207,255,0.1)'; btn.textContent = 'START CAST'; }
+            if (statusEl) statusEl.textContent = '';
+            showToast('Cast stopped');
+        };
 
         // ── DRAGGABLE ──
         function makeDraggable(el, handle) {
