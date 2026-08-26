@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+  <title>Human-Expanditure-Progran</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .game-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .game-frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Fallback for browsers without dynamic viewport units */
+    @supports not (height: 100dvh) {
+      .game-container {
+        height: 100vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-container">
+    <iframe
+      class="game-frame"
+      src="https://idonotknowhowtocodeyet.github.io/Human-Expanditure-Progran-Web-Port/RPGMakerMZ/"
+      title="Human-Expanditure-Progran"
+      allow="fullscreen; autoplay"
+      allowfullscreen
+    ></iframe>
+  </div>
+</body>
+</html>
