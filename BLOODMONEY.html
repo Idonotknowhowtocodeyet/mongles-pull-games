@@ -1,33 +1,112 @@
+<!-- The Button to Launch the Game -->
+<button id="openGameBtn" class="game-launch-btn">🎮 Play BLOODMONEY Fullscreen</button>
+
+<!-- The Full-Screen Popup Modal -->
+<div id="gameModal" class="fullscreen-modal">
+  <button id="closeGameBtn" class="close-modal-btn" aria-label="Close Game">✕ Close</button>
+  <div class="modal-content">
+    <!-- The iframe only loads when clicked to save your website loading speed -->
+    <iframe id="gameIframe" data-src="https://github.io" title="BLOODMONEY Game" allow="autoplay; fullscreen; gamepad"></iframe>
+  </div>
+</div>
+
+<!-- Styling for the Button and Popup -->
 <style>
-  /* Removes default browser spacing around the edges of the page */
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;       /* Prevents accidental scrolling */
-    background-color: #000; /* Black background matches the game theme */
+  /* Button Styling */
+  .game-launch-btn {
+    background-color: #aa0000;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+  .game-launch-btn:hover {
+    background-color: #d40000;
+    transform: translateY(-2px);
+  }
+  .game-launch-btn:active {
+    transform: translateY(0);
   }
 
-  .fullscreen-container {
-    width: 100vw;           /* 100% of viewport width */
-    height: 100vh;          /* 100% of viewport height */
+  /* Fullscreen Modal Backdrop */
+  .fullscreen-modal {
+    display: none; /* Hidden by default */
     position: fixed;
-    top: 0;
+    z-index: 99999; /* Forces it above everything else on your site */
     left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .fullscreen-modal.active {
+    display: block;
+    opacity: 1;
   }
 
-  .fullscreen-container iframe {
+  /* Close Button Styling */
+  .close-modal-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100000;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .close-modal-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Game Container Area */
+  .modal-content {
     width: 100%;
     height: 100%;
-    border: 0;
+  }
+  .modal-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
   }
 </style>
 
-<div class="fullscreen-container">
-  <iframe 
-    src="https://github.io" 
-    title="BLOODMONEY Fullscreen"
-    allow="autoplay; fullscreen; gamepad">
-  </iframe>
-</div>
+<!-- JavaScript to Handle the Clicks -->
+<script>
+  const modal = document.getElementById('gameModal');
+  const iframe = document.getElementById('gameIframe');
+  const openBtn = document.getElementById('openGameBtn');
+  const closeBtn = document.getElementById('closeGameBtn');
+
+  // Open the game popup
+  openBtn.addEventListener('click', () => {
+    // Set the source link only when clicked so the game doesn't load in the background early
+    if (!iframe.src) {
+      iframe.src = iframe.getAttribute('data-src');
+    }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Stop the website background from scrolling
+  });
+
+  // Close the game popup
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Re-enable website scrolling
+    
+    // Optional: Resets the iframe so the game music stops playing immediately when closed
+    iframe.src = ''; 
+  });
+</script>
